@@ -1,0 +1,1 @@
+export const accentColor: string = '#2ba58d'

@@ -1,13 +1,15 @@
-import React from 'react';
-import Canvas from './Canvas'
-import './main.css'
+import React from 'react'
+import Canvas from './canvas/Canvas'
+import Players from './players/Players'
+import ChatRoom from './ChatRoom/ChatRoom'
 
-function Main() {
-  return (
-    <div className="main">
-      <Canvas />
-    </div>
-  );
+export default function Main() {
+
+	return (
+		<main className="main">
+			<Players />
+			<Canvas />
+			<ChatRoom />
+		</main>
+	);
 }
-
-export default Main;

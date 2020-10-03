@@ -1,0 +1,24 @@
+.chatRoom {
+	width: 23%;
+	min-height: 100%;
+	border: 2px solid black;
+	background-color: rgb(255, 255, 255);
+	margin-left: 1vw;
+	overflow-y: auto;
+	position: relative;
+}
+
+.messageLog {
+	width: 100%;
+	padding: 0 6% 0 6%;
+	box-sizing: border-box;
+	font-size: 2vh;
+}
+
+.sendMessage {
+	padding: 6%;
+	width: 100%;
+	box-sizing: border-box;
+    position: absolute;
+	bottom: 0;
+}

@@ -18,8 +18,8 @@ export default function Players() {
 		]) // temporary while db isn't setup
 
 	useEffect(() => {
-		setPlayers(players) // retrieve latest player list from db
-	})
+		setPlayers(players => players) // retrieve latest players list from db
+	}, [])
 
 	return (
 		<div className="players">

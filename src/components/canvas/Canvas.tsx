@@ -1,6 +1,5 @@
 import React from "react"
 import CanvasDraw from "react-canvas-draw"
-import CanvasUtils from './CanvasUtils'
 
 const canvasDefaultProps = {
     onChange: null,
@@ -23,16 +22,18 @@ const canvasDefaultProps = {
 export default function Canvas() {
 	return (
 		<div className="canvas">
-			<CanvasUtils />
 			<CanvasDraw className="canvasDraw"
 				canvasWidth="100%"
-				canvasHeight="90%"
+				canvasHeight="100%"
 				brushColor="rgb(10,10,10)"
 				brushRadius={2}
 				lazyRadius={0}
 				hideGrid={true}
 				hideInterface={true}
 			/>
+			<div className="canvas">
+
+			</div>
 		</div>
 	)
 }

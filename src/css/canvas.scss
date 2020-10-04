@@ -6,6 +6,7 @@
 .canvas {
 	width: 100%;
 	height: 90%;
+	position: relative;
 }
 
 .canvasUtils {
@@ -35,14 +36,49 @@
 	height: 0.8%;
 }
 
-.roomNo {
+.help {
 	position: absolute;
 	top:0;
 	right:0;
-	padding-right: 0.5%;
+	margin: 0.5% 0.5% 0 0;
 	font-size: 1.7vh;
+}
+
+.help:hover {
+	cursor: pointer;
 }
 
 .canvasDraw {
 	cursor: url('../resources/favicon/favicon-32x32.png') 1 32, auto;
+}
+
+$ct-img-width: 2.5vmin;
+$ct-img-width-margin: 1vmin;
+
+.canvasTools {
+	width: calc(($ct-img-width * counter(canvasToolsImg)) + ($ct-img-width-margin * 2 * counter(canvasToolsImg)));
+	height: 6%;
+	position: absolute;
+	top:0;
+	left:0;
+	text-align: justify;
+	display: inline-block;
+	background-color: #cacaca;
+	border-right: 3px solid $accent-color;
+	border-bottom: 3px solid $accent-color;
+	z-index: 15; // enough to override z-index for canvas drawings
+	box-shadow: $drop-box-shadow;
+	overflow: hidden;
+}
+
+.canvasToolsImg {
+	width: $ct-img-width;
+	margin: 5% $ct-img-width-margin 2% $ct-img-width-margin;
+}
+.smallBrush {
+	width: 2vmin;
+}
+
+.canvasTools img:hover {
+	cursor: pointer;
 }

@@ -1,22 +1,19 @@
 import React from "react"
+import Help from './Help'
 import Round from './Round'
 import ShowHint from './ShowHint'
-import Clear from './Clear'
 import Submit from './Submit'
 
 export default function CanvasUtils() {
-	const roomNo = 5481
-
 	return (
 		<div className="canvasUtils">
 			<div>
-			<div className="roomNo">
-					Room No. {roomNo}
+				<div className="help">
+					<Help height="22px" />
 				</div>
 				<ul>
 					<li><Round /></li>
 					<li><ShowHint /></li>
-					<li><Clear /></li>
 					<li><Submit /></li>
 				</ul>
 				

@@ -10,9 +10,6 @@ import helpIcon from '../../resources/help.png'
 export default function Help(props: any) {
 	const [showHelp, setShowHelp] = useState(false);
 
-	const handleClose = () => {
-		setShowHelp(false);
-	};
 	return (
 		<div>
 			<img src={helpIcon} alt="Help" style={{height: props.height}} onClick={() => setShowHelp(true)} />

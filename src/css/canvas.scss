@@ -56,7 +56,7 @@ $ct-img-width: 2.5vmin;
 $ct-img-width-margin: 1vmin;
 
 .canvasTools {
-	width: calc(($ct-img-width * counter(canvasToolsImg)) + ($ct-img-width-margin * 2 * counter(canvasToolsImg)));
+	width: calc((#{$ct-img-width} * counter(canvasToolsImg)) + (#{$ct-img-width-margin} * 2 * counter(canvasToolsImg)));
 	height: 6%;
 	position: absolute;
 	top:0;

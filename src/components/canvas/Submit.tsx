@@ -1,5 +1,5 @@
 import React from "react"
-import CustomCssButton from './CustomCssButton'
+import CustomCssButton from '../mui/CustomCssButton'
 
 function click() {
 	alert("Are you sure you're finished?")
@@ -8,7 +8,7 @@ function click() {
 export default function Submit() {
 	return (
 		<div className="submit">
-			<CustomCssButton text="Submit" onClick={click} />
+			<CustomCssButton text="Submit" width="6.8vw" height="4vh" fontSize="0.7vw" onClick={click} />
 		</div>
 	)
 }

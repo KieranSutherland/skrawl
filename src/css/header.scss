@@ -1,0 +1,16 @@
+.header {
+	width: 100vw;
+	height: 8vh;
+	margin-bottom: 2vh;
+	display: flex;
+    align-items: center; /* vertical */
+    justify-content: center; /* horizontal */
+	background-color: $accent-color;
+    color: white;
+	font-size: 4.5vh;
+	font-weight: bold;
+}
+
+.headerLink:hover {
+	cursor: pointer;
+}

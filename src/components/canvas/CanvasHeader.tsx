@@ -4,15 +4,17 @@ import Round from './Round'
 import ShowHint from './ShowHint'
 import Submit from './Submit'
 
-export default function CanvasUtils() {
+export default function CanvasHeader() {
 	return (
-		<div className="canvasUtils">
+		<div className="canvasHeader">
 			<div>
 				<div className="help">
-					<Help height="22px" />
+					<Help height="2.2vh" />
+				</div>
+				<div className="round">
+					<Round />
 				</div>
 				<ul>
-					<li><Round /></li>
 					<li><ShowHint /></li>
 					<li><Submit /></li>
 				</ul>

@@ -1,5 +1,5 @@
 $accent-color: #2ba58d;
-$testing-color: #26967f;
+$testing-color: #555454;
 
 $drop-box-shadow: 
 	0 2.8px 2.2px rgba(0, 0, 0, 0.022),
@@ -25,19 +25,10 @@ code {
 		monospace;
 }
 
-.header {
-	width: 100vw;
-	height: 8vh;
-	line-height: 8vh;
-	margin-bottom: 2vh;
-	text-align: center;
-	background-color: $accent-color;
-    color: white;
-	font-size: 4.5vh;
-	font-weight: bold;
-}
-
-@import 'main';
+@import 'header';
+@import 'home';
+@import 'privateLobbyCreator';
+@import 'game';
 
 .footer {
 	height: 8vh;

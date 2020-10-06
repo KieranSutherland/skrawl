@@ -1,40 +1,18 @@
-import React from 'react'
-import TextField from '@material-ui/core/TextField'
-import FormControl from '@material-ui/core/FormControl'
-import { withStyles } from '@material-ui/core/styles'
-import { accentColor } from '../../constants'
-
-const CustomCssTextField = withStyles({
-	root: {
-		'& label.Mui-focused': {
-			color: accentColor,
-		},
-		'& .MuiInput-underline:after': {
-			borderBottomColor: accentColor,
-		},
-		'& .MuiOutlinedInput-root': {
-			'& fieldset': {
-			borderColor: accentColor,
-			},
-			'&:hover fieldset': {
-			borderColor: accentColor,
-			},
-			'&.Mui-focused fieldset': {
-			borderColor: accentColor,
-			},
-	  	},
-	}
-  })(TextField);
+import React, { useState } from 'react'
+import CustomCssTextField from '../mui/CustomCssTextField'
 
 export default function SendMessage() {
+	const [message, setMessage] = useState<string>('')
+
 	return (
 		<div className="sendMessage">
-			<FormControl fullWidth>
-				<CustomCssTextField 
-					id="outlined-basic" 
-					label="Message" 
-					variant="outlined" />
-			</FormControl>
+			<CustomCssTextField 
+				value={message}
+				onChangeMethod={setMessage}
+				id="outlined-basic"
+				inputLabelColor={"#b9b9b9"}
+				inputTextColor={"black"}
+				label="Message" />
 		</div>
 	)
 }

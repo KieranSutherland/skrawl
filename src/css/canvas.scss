@@ -9,7 +9,7 @@
 	position: relative;
 }
 
-.canvasUtils {
+.canvasHeader {
 	width: 100%;
 	height: 9.2%;
 	box-sizing: border-box;
@@ -18,22 +18,28 @@
 	text-align: center;
 }
 
-.canvasUtils ul {
+.canvasHeader ul {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 }
 
-.canvasUtils li {
+.canvasHeader li {
 	display: inline-flex;
 	text-align: center;
 	font-weight: bold;
 	font-size: 3.2vh;
-	margin: 1.1% 10% 0 0;
+	margin: 1.1% 5% 0 5%;
 }
 
-.timer {
-	height: 0.8%;
+.round {
+	position: absolute;
+	width: max-content;
+	top:0;
+	left:0;
+	margin: 1.2% 0.5% 0 2%;
+	font-size: 3.5vh;
+	font-weight: bold;
 }
 
 .help {
@@ -46,6 +52,10 @@
 
 .help:hover {
 	cursor: pointer;
+}
+
+.timer {
+	height: 0.8%;
 }
 
 .canvasDraw {
@@ -64,8 +74,8 @@ $ct-img-width-margin: 1vmin;
 	text-align: justify;
 	display: inline-block;
 	background-color: #cacaca;
-	border-right: 3px solid $accent-color;
-	border-bottom: 3px solid $accent-color;
+	border-right: 3px solid #9fd8cd;
+	border-bottom: 3px solid #9fd8cd;
 	z-index: 15; // enough to override z-index for canvas drawings
 	box-shadow: $drop-box-shadow;
 	overflow: hidden;

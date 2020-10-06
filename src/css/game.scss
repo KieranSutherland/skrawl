@@ -2,17 +2,7 @@
 @import 'chatRoom';
 @import 'players';
 
-.main ::-webkit-scrollbar {
-    width: 8px;
-    background-color: #F5F5F5;
-}
-
-.main ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-	background-color: rgb(180, 180, 180);
-}
-
-.main {
+.game {
 	display: -webkit-flex;
     display: flex;
     -webkit-justify-content: space-around; 

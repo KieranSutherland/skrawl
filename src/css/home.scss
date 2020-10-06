@@ -1,0 +1,25 @@
+.lobbySetup {
+	width: 35vw;
+	height: 70vh;
+	margin: 7vh auto;
+	display: flex;
+    align-items: center; /* vertical */
+    justify-content: center; /* horizontal */
+	background-color: rgb(68, 68, 68);
+	box-shadow: $drop-box-shadow;
+	position: relative;
+}
+
+.lobbySetup ul {
+	display: table;
+	padding: 0;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	list-style-type: none;
+}
+
+.lobbySetup li {
+	text-align: center;
+	margin: 30% 0;
+	box-shadow: $drop-box-shadow;
+}

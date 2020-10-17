@@ -1,44 +1,57 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import CustomCssButton from './mui/CustomCssButton'
 import CustomCssTextField from './mui/CustomCssTextField'
-import FormControl from '@material-ui/core/FormControl'
-import { Link, useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 
 export default function Home() {
-	const [nickname, setNickname] = useState<string>('')
+	const [nickname, setNickname] = useState<string>()
+	var goToPage = '/'
 
 	const history = useHistory()
 
-    return (
-        <div id="home">
-            <div className="lobbySetup">
-				<FormControl required>
-				<ul>
-					<li>
-						<CustomCssTextField 
-							id="outlined-required"
-							value={nickname}
-							onChangeMethod={setNickname}
-							required={true}
-							label="Nickname"
-							inputLabelColor={"#e6e6e6"}
-							inputTextColor={"#e6e6e6"} />
-					</li>
-					<li>
-						<Link to="/" style={{ textDecoration: 'none' }}>
-							<CustomCssButton text="Public Lobby" width="20vw" height="8vh" fontSize="1.5vw" />
-						</Link>
-					</li>
-					<li>
-						<Link to="/private-lobby" style={{ textDecoration: 'none' }}>
-							{/* <CustomCssButton text="Private Lobby" width="20vw" height="8vh" fontSize="1.5vw"  /> */}
-							<CustomCssButton text="Private Lobby" width="20vw" height="8vh" fontSize="1.5vw" />
-						</Link>
-					</li>
-				</ul>
-				</FormControl>
+	const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		event.preventDefault()
+		history.push(goToPage)
+	}
+
+	return (
+		<div id="home">
+			<div className="lobbySetup">
+				<form onSubmit={handleOnSubmit}>
+					<ul>
+						<li>
+							<CustomCssTextField
+								id="outlined-required"
+								value={nickname}
+								setTextMethod={setNickname}
+								required={true}
+								label="Nickname"
+								inputLabelColor={"#e6e6e6"}
+								autoFocus={true}
+								inputTextColor={"#e6e6e6"} />
+						</li>
+						<li>
+							<div onClick={() => goToPage="game"}>
+								<CustomCssButton
+									text="Public Lobby"
+									width="20vw"
+									height="8vh"
+									fontSize="1.5vw" />
+							</div>
+						</li>
+						<li>
+							<div onClick={() => goToPage="private-lobby"}>
+								<CustomCssButton
+									text="Private Lobby"
+									width="20vw"
+									height="8vh"
+									fontSize="1.5vw" />
+							</div>
+						</li>
+					</ul>
+				</form>
 			</div>
-        </div>
-    );
+		</div>
+	);
 }
 

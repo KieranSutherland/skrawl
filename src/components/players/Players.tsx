@@ -24,7 +24,7 @@ export default function Players(props: any) {
 	return (
 		<div className="players" style={{backgroundColor: props.backgroundColor, color: props.color}}>
 			{players.map((player, index) => {
-				return <Player nickname={player.nickname}/>
+				return <Player key={index} nickname={player.nickname}/>
 			})}
 		</div>
 	)

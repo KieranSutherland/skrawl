@@ -33,12 +33,11 @@ export default function CustomCssTextField(props: any) {
 
 	return (
 		<div>
-			<FormControl fullWidth>
+			<FormControl fullWidth onSubmit={e => props.onSubmit(e)}>
 				<CustomCssTextField 
 					id={props.id} 
-					// onChange={event => {props.onChangeMethod(event.target.value)}}
-					// inputRef={input => props.inputRef(input)}
-					// value={props.value}
+					onChange={e => props.setTextMethod(e.target.value)}
+					value={props.value}
 					required={props.required}
 					label={props.label} 
 					variant="outlined"

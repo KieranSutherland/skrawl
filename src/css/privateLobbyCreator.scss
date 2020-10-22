@@ -13,7 +13,7 @@
 
 .privateLobbyPlayerList ::-webkit-scrollbar-thumb {
     border-radius: 10px;
-	background-color: rgb(143, 143, 143);
+	background-color: rgb(126, 126, 126);
 }
 
 .privateLobbySettings {
@@ -37,4 +37,13 @@
 
 .privateLobbySettings li {
 	text-align: center;
+}
+
+.privateLobbySettings .roomCode {
+	color: #ffffff;
+	font-size: 1.5em;
+}
+
+.privateLobbySettings .roomCode h1 {
+	margin: 0;
 }

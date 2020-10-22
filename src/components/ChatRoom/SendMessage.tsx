@@ -1,43 +1,50 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
+import { withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
-import FormControl from '@material-ui/core/FormControl'
-import Message from './Message'
-import io from 'socket.io-client'
+import { accentColor } from '../../constants'
+
+const CustomCssTF = withStyles({
+	root: {
+		'& label': {
+			color: "#e6e6e6",
+		},
+		'& label.Mui-focused': {
+			color: "#e6e6e6",
+		},
+		'& .MuiInput-underline:after': {
+			borderBottomColor: accentColor,
+		},
+		'& .MuiOutlinedInput-root': {
+			'& fieldset': {
+				borderColor: accentColor,
+			},
+			'&:hover fieldset': {
+				borderColor: accentColor,
+			},
+			'&.Mui-focused fieldset': {
+				borderColor: accentColor,
+			},
+		},
+	}
+})(TextField)
 
 export default function SendMessage() {
 
 	const [message, setMessage] = useState<string>('')
 
-	const socketRef = useRef<typeof io.Socket>()
-
-	useEffect(() => {
-		if(socketRef) {
-			socketRef.current = io.connect("http://localhost:8000/")
-		}
-	}, [])
-
-	const handleOnChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-		setMessage(event.target.value)
-	}
-
 	const sendMessage = () => {
-		console.log('sendMessage')
-		const messageObj: Message = new Message('nickname', message)
-		setMessage('')
-		socketRef.current?.emit("send-message", messageObj)
+
 	}
 
 	return (
 		<div className="sendMessage">
-			<FormControl fullWidth>
-				<TextField 
-					onChange={handleOnChange}
-					onKeyPress={e => {if(e.key === 'Enter') sendMessage()}}
-					value={message}
-					label="Message" 
-					variant="outlined"
-					autoComplete="off" />
-			</FormControl>
+			<CustomCssTF
+				onChange={e => setMessage(e.target.value)}
+				onKeyPress={e => { if (e.key === 'Enter') sendMessage() }}
+				value={message}
+				label="Message"
+				variant="outlined"
+				autoComplete="off" />
 		</div>
 	)
 }

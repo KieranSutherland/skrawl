@@ -1,5 +1,5 @@
 $accent-color: #2ba58d;
-$testing-color: #555454;
+$testing-color: #494949;
 
 $drop-box-shadow: 
 	0 3.3px 2.2px rgba(0, 0, 0, 0.08),
@@ -29,12 +29,10 @@ code {
 @import 'home';
 @import 'privateLobbyCreator';
 @import 'game';
+@import 'footer';
+@import 'backbutton';
 
-.footer {
-	height: 8vh;
-	margin-top: 2vh;
-	background-color: rgb(68, 68, 68);
-}
+
 
 
 

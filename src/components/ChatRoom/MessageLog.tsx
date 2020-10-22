@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Message from './Message'
-import io from 'socket.io-client'
 
 export default function MessageLog() {
 	const [messages, setMessages] = useState<Message[]>([
@@ -32,22 +31,20 @@ export default function MessageLog() {
 			new Message('toby', 'test message')
 	])
 
-	const socketRef = useRef<typeof io.Socket>()
-
-	useEffect(() => {
-		if(socketRef) {
-			socketRef.current = io.connect('/')
-			socketRef.current.on("message", (message: Message) => {
-				console.log('Received message')
-				setMessages(oldMsgs => [message, ...oldMsgs])
-			})
-		}
-	}, [])
+	// useEffect(() => {
+	// 	if(socketRef) {
+	// 		socketRef.current = io.connect('/')
+	// 		socketRef.current.on("message", (message: Message) => {
+	// 			console.log('Received message')
+	// 			setMessages(oldMsgs => [message, ...oldMsgs])
+	// 		})
+	// 	}
+	// }, [])
 
 	return (
 		<div className="messageLog">
 			{messages.map((msg, index) => {
-				return (<div id="message" key={index} style={{padding: '4px 6px'}}>
+				return (<div className="message" key={index}>
 							<div className="messageLogNickname">{msg.nickname}</div>
 							<div>{msg.body}</div>
 						</div>)

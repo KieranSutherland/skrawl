@@ -9,6 +9,8 @@ import PrivateLobby from './components/privateLobby/PrivateLobby'
 import PrivateLobbyJoin from './components/privateLobby/PrivateLobbyJoin'
 import PrivateLobbyCreate from './components/privateLobby/PrivateLobbyCreate'
 import PrivateLobbyCreator from './components/privateLobby/PrivateLobbyCreator'
+import TermsAndConditions from './components/legals/TermsAndConditions'
+import Privacy from './components/legals/Privacy'
 import * as serviceWorker from './serviceWorker'
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom"
 import firebase from 'firebase/app'
@@ -29,6 +31,8 @@ ReactDOM.render(
 				<Route path="/private-lobby-join" render={() => <PrivateLobbyJoin />} />
 				<Route path="/private-lobby-create" render={() => <PrivateLobbyCreate />} />
 				<Route path="/private-lobby-creator" render={() => <PrivateLobbyCreator />} />
+				<Route path="/terms-and-conditions" render={() => <TermsAndConditions />} />
+				<Route path="/privacy" render={() => <Privacy />} />
 				<Redirect to="/" />
 			</Switch>
 			<Footer />

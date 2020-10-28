@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import CustomCssButton from './mui/CustomCssButton'
 import CustomCssTextField from './mui/CustomCssTextField'
+import Loading from './Loading'
 import { useHistory } from "react-router-dom"
 import firebase from 'firebase/app'
 import { useAuthState } from 'react-firebase-hooks/auth'
@@ -16,15 +17,21 @@ const getAuthDisplayName = () => {
 export default function Home() {
 	const history = useHistory()
 	const [nickname, setNickname] = useState<string>(getAuthDisplayName())
-	var goToPage = '/'
+	var goToPage: string = '/'
+	var loading: boolean = false
 
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+		loading = true
 		event.preventDefault()
 		const auth = firebase.auth()
-		if (auth.currentUser) {
-			history.push(goToPage) // if user already exists, skip new sign in
+		if (auth.currentUser) { // if user already exists, skip new sign in
+			if (auth.currentUser.displayName !== nickname) {
+				auth.currentUser.updateProfile({ displayName: nickname })
+			}
+			history.push(goToPage)
 			return
 		}
+		console.log(`creating new user with nickname: ${nickname}`)
 		auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
 		const authPromise = auth.signInAnonymously()
 		authPromise.finally(() => {
@@ -33,12 +40,14 @@ export default function Home() {
 			})
 			history.push(goToPage)
 		})
+		loading = false
 	}
 
 	return (
 		<div id="home">
 			<div className="lobbySetup">
-				<form onSubmit={handleSubmit}> 
+				<Loading loading={loading} />
+				<form onSubmit={handleSubmit}>
 					<ul>
 						<li>
 							<CustomCssTextField
@@ -50,7 +59,7 @@ export default function Home() {
 								autoFocus={true} />
 						</li>
 						<li>
-							<div onClick={() => goToPage="game"}>
+							<div onClick={() => goToPage = "game"}>
 								<CustomCssButton
 									text="Public Lobby"
 									width="20vw"
@@ -59,7 +68,7 @@ export default function Home() {
 							</div>
 						</li>
 						<li>
-							<div onClick={() => goToPage="private-lobby"}>
+							<div onClick={() => goToPage = "private-lobby"}>
 								<CustomCssButton
 									text="Private Lobby"
 									width="20vw"

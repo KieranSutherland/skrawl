@@ -1,0 +1,12 @@
+.legals {
+	width: 80vw;
+	height: 76vh;
+	margin: 4vh auto;
+	display: flex;
+    align-items: center; /* vertical */
+    justify-content: center; /* horizontal */
+	background-color: rgb(68, 68, 68);
+	box-shadow: $drop-box-shadow;
+	position: relative;
+	color: white;
+}

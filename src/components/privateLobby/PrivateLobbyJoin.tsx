@@ -5,6 +5,7 @@ import BackButton from '../BackButton'
 import TextField from '@material-ui/core/TextField'
 import { useHistory } from "react-router-dom"
 import firebase from 'firebase/app'
+import * as firebaseHelper from '../../utils/firebaseHelper'
 import 'firebase/firestore';
 
 export default function PrivateLobbyJoin() {
@@ -13,18 +14,31 @@ export default function PrivateLobbyJoin() {
 	const [roomCode, setRoomCode] = useState('')
 	const [password, setPassword] = useState('')
 
-	useEffect(() => {
-		console.log(firebase.auth().currentUser != null ? firebase.auth().currentUser!.displayName : '')
-		console.log(firebase.auth().currentUser)
-	}, [])
-
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
-		history.push('/private-lobby-creator')
-	}
+		if (!firebase.auth().currentUser) return
 
-	const handleJoin = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+		await firebaseHelper.removeUserFromAllLobbies(firebase.auth().currentUser!)
+		await firebaseHelper.deleteEmptyLobbies()
+
+		// Check if lobby exists
+		const lobby = await firebaseHelper.getLobbyByIdAndPassword(roomCode, password)
+		if (!lobby) {
+			alert('Lobby with that room code and password does not exist')
+			return
+		}
 		
+		// Add user to players list of lobby
+		const lobbyPlayers: any[] = await (await firestore.collection('lobbies').doc(roomCode).get()).get('players')
+		lobbyPlayers.push({
+			displayName: firebase.auth().currentUser!.displayName,
+			uid: firebase.auth().currentUser!.uid
+		})
+		await firestore.collection('lobbies').doc(roomCode).update({
+			players: lobbyPlayers
+		})
+
+		history.push('/private-lobby-creator')
 	}
 
 	return (
@@ -50,9 +64,7 @@ export default function PrivateLobbyJoin() {
 							label="Password" />
 					</li>
 					<li>
-						<div onClick={handleJoin}>
-							<CustomCssButton text="Confirm" width="20vw" height="8vh" fontSize="1.5vw" />
-						</div>
+						<CustomCssButton text="Join" width="20vw" height="8vh" fontSize="1.5vw" />
 					</li>
 				</ul>
 			</form>

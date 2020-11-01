@@ -6,6 +6,7 @@ import { useHistory } from "react-router-dom"
 import firebase from 'firebase/app'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
+import * as firebaseHelper from '../utils/firebaseHelper'
 
 const getAuthDisplayName = () => {
 	if (firebase.auth().currentUser && firebase.auth().currentUser!.displayName != null) {
@@ -17,11 +18,12 @@ const getAuthDisplayName = () => {
 export default function Home() {
 	const history = useHistory()
 	const [nickname, setNickname] = useState<string>(getAuthDisplayName())
+	const [loading, setLoading] = useState<boolean>(false)
 	var goToPage: string = '/'
-	var loading: boolean = false
 
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		loading = true
+	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		setLoading(true)
+		// console.log('home uid: ' + firebase.auth().currentUser?.uid)
 		event.preventDefault()
 		const auth = firebase.auth()
 		if (auth.currentUser) { // if user already exists, skip new sign in
@@ -40,7 +42,7 @@ export default function Home() {
 			})
 			history.push(goToPage)
 		})
-		loading = false
+		setLoading(false)
 	}
 
 	return (

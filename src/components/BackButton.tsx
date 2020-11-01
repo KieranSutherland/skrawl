@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom"
 import { accentColor } from '../constants'
 
 export default function BackButton() {
-	var history = useHistory()
+	const history = useHistory()
     return (
         <div className="backButton" onClick={() => history.goBack()}>
 				<ArrowBackIosIcon style={{fill: accentColor}} />

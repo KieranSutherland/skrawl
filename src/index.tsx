@@ -14,11 +14,17 @@ import Privacy from './components/legals/Privacy'
 import * as serviceWorker from './serviceWorker'
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom"
 import firebase from 'firebase/app'
+import * as firebaseAdmin from 'firebase-admin'
+import schedule from 'node-schedule'
+import * as firebaseHelper from './utils/firebaseHelper'
 import 'firebase/firestore'
 import 'firebase/auth'
-import FIREBASE_API_KEY from './secrets'
+import {FIREBASE_API_KEY, FIREBASE_ADMIN_SDK_KEY} from './secrets'
 
 firebase.initializeApp(FIREBASE_API_KEY)
+// firebaseAdmin.initializeApp(FIREBASE_ADMIN_SDK_KEY);
+
+// schedule.scheduleJob('0 * * * *', async () => await firebaseHelper.fullClean())
 
 ReactDOM.render(
     <React.StrictMode>

@@ -1,10 +1,10 @@
 export default class PlayerDetails {
 
-	readonly nickname: string
+	readonly displayName: string
 	finished: boolean
 
-	constructor(nickname: string) {
-		this.nickname = nickname
+	constructor(displayName: string) {
+		this.displayName = displayName
 		this.finished = false
 	}
 	

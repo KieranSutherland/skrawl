@@ -11,8 +11,18 @@
 }
 
 .player {
-	padding: 10% 5% 10% 5%;
+	height: 12%;
+	width: 80%;
+	padding: 0 5%; 
 	border-bottom: 1px solid #2ba58d62;
 	font-size: 1vw;
-	margin: 0 5% 0 5%;
+	margin: 0 5%;
+	display: flex;
+	align-items: center; /* vertical */
+}
+
+.hostImg {
+	margin: 0 5% 1.5% 0;
+	width: 3.2vmin;
+	align-items: center; /* vertical */
 }

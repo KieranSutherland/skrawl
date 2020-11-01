@@ -27,8 +27,9 @@ export default function PrivateLobbyCreator() {
 	const firestore = firebase.firestore(); // change to use explicit import at some point
 	const history = useHistory()
 	const [sfw, setSfw] = useState<boolean>(true)
-	const [roomCode, setRoomCode] = useState<string>('3751')
+	const [roomCode, setRoomCode] = useState<string>('')
 	const [players, setPlayers] = useState<FirebaseLobbyPlayersField[]>([])
+	const [hostUid, setHostUid] = useState<string>('')
 	const MIN_PLAYERS = 4
 	const MAX_PLAYERS = 64
 	var currentLobby: FirebaseQueryDocumentSnapshot | undefined = undefined
@@ -49,7 +50,7 @@ export default function PrivateLobbyCreator() {
 	
 	useEffect(() => {
 		if (!firebase.auth().currentUser?.uid) {
-			history.push('/')
+			// history.push('/')
 			return
 		}
 		// console.log('creator uid: ' + firebase.auth().currentUser?.uid)
@@ -64,6 +65,7 @@ export default function PrivateLobbyCreator() {
 		
 		setRoomCode(currentLobby!.id)
 		setPlayers(currentLobby!.get('players'))
+		setHostUid(currentLobby!.get('host'))
 		// console.log('players: ' + JSON.stringify(currentLobby!.get('players'), getCircularReplacer()))
 		// console.log('final currentLobby: ' + JSON.stringify(currentLobby, getCircularReplacer()))
 	}
@@ -90,7 +92,7 @@ export default function PrivateLobbyCreator() {
 			<BackButton />
 			<div className="privateLobbyPlayerList">
 				{/* Players: (11/16) */}
-				<Players players={players} backgroundColor={'#444444'} color={'#ffffff'} />
+				<Players players={players} backgroundColor={'#444444'} color={'#ffffff'} hostUid={hostUid} />
 			</div>
 			<div className="privateLobbySettings">
 				<ul>

@@ -4,9 +4,6 @@ import CustomCssTextField from './mui/CustomCssTextField'
 import Loading from './Loading'
 import { useHistory } from "react-router-dom"
 import firebase from 'firebase/app'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { useCollectionData } from 'react-firebase-hooks/firestore'
-import * as firebaseHelper from '../utils/firebaseHelper'
 
 const getAuthDisplayName = () => {
 	if (firebase.auth().currentUser && firebase.auth().currentUser!.displayName != null) {
@@ -21,7 +18,7 @@ export default function Home() {
 	const [loading, setLoading] = useState<boolean>(false)
 	var goToPage: string = '/'
 
-	const stopAuthListener = firebase.auth().onAuthStateChanged(user => user ? setNickname(getAuthDisplayName()) : '')
+	const stopAuthListener = firebase.auth().onAuthStateChanged(user => user && nickname === '' ? setNickname(getAuthDisplayName()) : '')
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		setLoading(true)
@@ -29,7 +26,6 @@ export default function Home() {
 		event.preventDefault()
 		const auth = firebase.auth()
 		if (auth.currentUser) { // if user already exists, skip new sign in
-			console.log('existing')
 			if (auth.currentUser.displayName !== nickname) {
 				auth.currentUser.updateProfile({ displayName: nickname })
 			}
@@ -38,16 +34,15 @@ export default function Home() {
 			return
 		}
 		console.log(`creating new user with nickname: ${nickname}`)
-		auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
 		const authPromise = auth.signInAnonymously()
 		authPromise.finally(() => {
 			auth.currentUser!.updateProfile({
 				displayName: nickname
 			})
+			auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)
 			setLoading(false)
 			history.push(goToPage)
 		})
-		console.log('testing')
 	}
 
 	return (

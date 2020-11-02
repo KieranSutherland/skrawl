@@ -11,8 +11,12 @@
 	position: relative;
 }
 
+.lobbySetup form {
+	width: 55%;
+}
+
 .lobbySetup ul {
-	display: table;
+	display: flexbox;
 	padding: 0;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
@@ -21,6 +25,6 @@
 
 .lobbySetup li {
 	text-align: center;
-	margin: 30% 0;
+	margin: 30% 0; // might be problematic if there's more than 3 li
 	box-shadow: $drop-box-shadow;
 }

@@ -71,7 +71,9 @@ export default function PrivateLobbyJoin() {
 							label="Password" />
 					</li>
 					<li>
-						<CustomCssButton text="Join" width="20vw" height="8vh" fontSize="1.5vw" />
+						<div>
+							<CustomCssButton text="Join" width="100%" height="8vh" fontSize="3vh" />
+						</div>
 					</li>
 				</ul>
 			</form>

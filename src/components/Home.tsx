@@ -64,18 +64,18 @@ export default function Home() {
 							<div onClick={() => goToPage = "game"}>
 								<CustomCssButton
 									text="Public Lobby"
-									width="20vw"
+									width="100%"
 									height="8vh"
-									fontSize="1.5vw" />
+									fontSize="3vmin" />
 							</div>
 						</li>
 						<li>
 							<div onClick={() => goToPage = "private-lobby"}>
 								<CustomCssButton
 									text="Private Lobby"
-									width="20vw"
+									width="100%"
 									height="8vh"
-									fontSize="1.5vw" />
+									fontSize="3vmin" />
 							</div>
 						</li>
 					</ul>

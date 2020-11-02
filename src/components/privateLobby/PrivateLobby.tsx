@@ -8,18 +8,20 @@ export default function PrivateLobby() {
 	return (
 		<div className="lobbySetup">
 			<BackButton />
-			<ul>
-				<li style={{ boxShadow: 'none' }}>
-					<Link to="private-lobby-join" style={{ textDecoration: 'none' }}>
-						<CustomCssButton text="Join" width="20vw" height="8vh" fontSize="1.5vw" />
-					</Link>
-				</li>
-				<li>
-					<Link to="private-lobby-create" style={{ textDecoration: 'none' }}>
-						<CustomCssButton text="Create" width="20vw" height="8vh" fontSize="1.5vw" />
-					</Link>
-				</li>
-			</ul>
+			<form>
+				<ul>
+					<li style={{ boxShadow: 'none' }}>
+						<Link to="private-lobby-join" style={{ textDecoration: 'none' }}>
+							<CustomCssButton text="Join" width="100%" height="8vh" fontSize="3vh" />
+						</Link>
+					</li>
+					<li>
+						<Link to="private-lobby-create" style={{ textDecoration: 'none', width: '100%' }}>
+							<CustomCssButton text="Create" width="100%" height="8vh" fontSize="3vh" />
+						</Link>
+					</li>
+				</ul>
+			</form>
 		</div>
 	);
 }

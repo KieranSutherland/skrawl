@@ -84,7 +84,7 @@ export default function PrivateLobbyCreate() {
 							label="Create password" />
 					</li>
 					<li>
-						<CustomCssButton text="Create" width="20vw" height="8vh" fontSize="1.5vw" />
+						<CustomCssButton text="Create" width="100%" height="8vh" fontSize="3vh" />
 					</li>
 				</ul>
 			</form>

@@ -43,6 +43,7 @@ const CustomCssTextField = (props: any) => {
 				autoComplete="off"
 				autoFocus={props.autoFocus}
 				fullWidth={true}
+				spellCheck={false}
 				InputProps={{ style: { color: "#e6e6e6"} }} />
 		</div>
 	)

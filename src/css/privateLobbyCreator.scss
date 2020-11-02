@@ -9,6 +9,7 @@
 
 .privateLobbyPlayerList ::-webkit-scrollbar {
 	width: 6px;
+	height: 6px;
 }
 
 .privateLobbyPlayerList ::-webkit-scrollbar-thumb {
@@ -28,7 +29,8 @@
 }
 
 .privateLobbySettings ul {
-	display: table;
+	width: 60%;
+	display: flexbox;
 	padding: 0;
 	margin: 0;
 	-moz-box-sizing: border-box;
@@ -42,7 +44,7 @@
 
 .privateLobbySettings {
 	color: #ffffff;
-	font-size: 1.5em;
+	font-size: 2.5vmin;
 }
 
 .privateLobbySettings h1 {

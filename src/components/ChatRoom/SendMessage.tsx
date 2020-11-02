@@ -45,6 +45,7 @@ export default function SendMessage() {
 				label="Message"
 				variant="outlined"
 				fullWidth={true}
+				spellCheck={false}
 				autoComplete="off" />
 		</div>
 	)

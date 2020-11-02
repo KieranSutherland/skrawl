@@ -137,7 +137,7 @@ export default function PrivateLobbyCreator() {
 						currentUser?.uid === hostUid ?
 							<li>
 								<div onClick={handleStartClick}>
-									<CustomCssButton text="Start" width="15vw" height="8vh" fontSize="1.5vw" />
+									<CustomCssButton text="Start" width="100%" height="8vh" fontSize="3vh" />
 								</div>
 							</li>
 							:

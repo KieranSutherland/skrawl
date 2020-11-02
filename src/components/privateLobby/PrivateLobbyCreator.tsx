@@ -80,7 +80,7 @@ export default function PrivateLobbyCreator() {
 				sfw: newBool
 			}
 		})
-	};
+	}
 
 	const handleStartClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		if (players.length < MIN_PLAYERS) {

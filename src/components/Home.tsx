@@ -16,13 +16,19 @@ export default function Home() {
 	const history = useHistory()
 	const [nickname, setNickname] = useState<string>(getAuthDisplayName())
 	const [loading, setLoading] = useState<boolean>(false)
+	const MAX_NICKNAME_LENGTH = 16
 	var goToPage: string = '/'
 
-	const stopAuthListener = firebase.auth().onAuthStateChanged(user => user && nickname === '' ? setNickname(getAuthDisplayName()) : '')
+	// const stopAuthListener = firebase.auth().onAuthStateChanged(user => user && nickname === '' ? setNickname(getAuthDisplayName()) : stopAuthListener())
+	
+	// useEffect(() => {
+	// 	if (nickname !== '') {
+	// 		stopAuthListener()
+	// 	}
+	// }, [nickname])
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		setLoading(true)
-		stopAuthListener()
 		event.preventDefault()
 		const auth = firebase.auth()
 		if (auth.currentUser) { // if user already exists, skip new sign in
@@ -45,6 +51,12 @@ export default function Home() {
 		})
 	}
 
+	const handleNicknameChange = (nickname: string) => {
+		if (nickname.length <= MAX_NICKNAME_LENGTH) {
+			setNickname(nickname)
+		}
+	}
+
 	return (
 		loading ? <div id="home"><div className="lobbySetup"><Loading /></div></div> :
 		<div id="home">
@@ -55,7 +67,7 @@ export default function Home() {
 							<CustomCssTextField
 								id="outlined-required"
 								value={nickname}
-								setTextMethod={setNickname}
+								setTextMethod={handleNicknameChange}
 								required={true}
 								label="Nickname"
 								autoFocus={true} />

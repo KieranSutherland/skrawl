@@ -1,35 +1,34 @@
 import React, { useState } from 'react'
 import CustomCssButton from '../mui/CustomCssButton'
 import CustomCssTextField from '../mui/CustomCssTextField'
+import Loading from '../Loading'
 import BackButton from '../BackButton'
 import { useHistory } from "react-router-dom"
 import firebase from 'firebase/app'
 import * as firebaseHelper from '../../utils/firebaseHelper'
-import * as routerHelper from '../../utils/routerHelper'
 
 export default function PrivateLobbyCreate() {
 	const firestore = firebase.firestore(); // change to use explicit import at some point
 	const history = useHistory()
 	const [password, setPassword] = useState('')
-	const maxLobbies = 9999
-	const minLobbies = 1000
+	const [loading, setLoading] = useState<boolean>(false)
+	const MAX_LOBBIES = 9999
+	const MIN_LOBBIES = 1000
 	var goToPage = '/private-lobby-creator'
-
-	// if(!firebase.auth().currentUser) {
-	// 	history.push('/')	FIX ME
-	// }
 	
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		setLoading(true)
 		event.preventDefault()
 		const lobbies: FirebaseCollectionRefData = firestore.collection('lobbies')
 		const isMaxLobbies: boolean = await lobbies.get().then( col => {
-			if (col.size >= maxLobbies) {
+			if (col.size >= MAX_LOBBIES) {
 				return true
 			}
 			return false
 		})
 		if (isMaxLobbies) {
-			console.error('There are too many lobbies, skipping this lobby creation...')
+			setLoading(false)
+			alert('Sorry, there are too many active lobbies right now, skipping this lobby creation...')
 			return
 		}
 		await firebaseHelper.removeUserFromAllLobbies(firebase.auth().currentUser!)
@@ -50,6 +49,7 @@ export default function PrivateLobbyCreate() {
 				SFW: false
 			}
 		})
+		setLoading(false)
 		history.push(goToPage)
 	}
 
@@ -61,7 +61,7 @@ export default function PrivateLobbyCreate() {
 	}
 
 	const generateRandomNumExcluding = (excludeNums: number[]): number => {
-		var num = Math.floor(Math.random() * (Math.floor(maxLobbies) - Math.ceil(minLobbies) + 1)) + Math.ceil(minLobbies)
+		var num = Math.floor(Math.random() * (Math.floor(MAX_LOBBIES) - Math.ceil(MIN_LOBBIES) + 1)) + Math.ceil(MIN_LOBBIES)
 		if (excludeNums.indexOf(num) > -1) {
 			return generateRandomNumExcluding(excludeNums)
 		}
@@ -69,6 +69,7 @@ export default function PrivateLobbyCreate() {
 	}
 
 	return (
+		loading ? <div className="lobbySetup"><Loading /></div> :
 		<div className="lobbySetup">
 			<BackButton />
 			<form onSubmit={handleSubmit}>

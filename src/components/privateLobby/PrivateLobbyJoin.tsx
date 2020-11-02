@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import CustomCssButton from '../mui/CustomCssButton'
 import CustomCssTextField from '../mui/CustomCssTextField'
+import Loading from '../Loading'
 import BackButton from '../BackButton'
-import TextField from '@material-ui/core/TextField'
 import { useHistory } from "react-router-dom"
 import firebase from 'firebase/app'
 import * as firebaseHelper from '../../utils/firebaseHelper'
@@ -13,10 +13,15 @@ export default function PrivateLobbyJoin() {
 	const history = useHistory()
 	const [roomCode, setRoomCode] = useState('')
 	const [password, setPassword] = useState('')
+	const [loading, setLoading] = useState<boolean>(false)
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+		setLoading(true)
 		event.preventDefault()
-		if (!firebase.auth().currentUser) return
+		if (!firebase.auth().currentUser) {
+			setLoading(false)
+			return
+		}
 
 		await firebaseHelper.removeUserFromAllLobbies(firebase.auth().currentUser!)
 		await firebaseHelper.deleteEmptyLobbies()
@@ -24,6 +29,7 @@ export default function PrivateLobbyJoin() {
 		// Check if lobby exists
 		const lobby = await firebaseHelper.getLobbyByIdAndPassword(roomCode, password)
 		if (!lobby) {
+			setLoading(false)
 			alert('Lobby with that room code and password does not exist')
 			return
 		}
@@ -37,11 +43,12 @@ export default function PrivateLobbyJoin() {
 		await firestore.collection('lobbies').doc(roomCode).update({
 			players: lobbyPlayers
 		})
-
+		setLoading(false)
 		history.push('/private-lobby-creator')
 	}
 
 	return (
+		loading ? <div className="lobbySetup"><Loading /></div> :
 		<div className="lobbySetup">
 			<BackButton />
 			<form onSubmit={handleSubmit}>

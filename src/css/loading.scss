@@ -1,9 +1,8 @@
 .loading {
-	position: absolute;
-	bottom: 0;
-	right: 0;
+	display: flex;
 	z-index: 50;
-	margin: 4%;
-	width: 9%;
-	height: 9%;
+	width: 30%;
+	height: 30%;
+	align-items: center; /* vertical */
+    justify-content: center; /* horizontal */
 }

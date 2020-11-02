@@ -23,13 +23,13 @@ export default function Home() {
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		setLoading(true)
-		// console.log('home uid: ' + firebase.auth().currentUser?.uid)
 		event.preventDefault()
 		const auth = firebase.auth()
 		if (auth.currentUser) { // if user already exists, skip new sign in
 			if (auth.currentUser.displayName !== nickname) {
 				auth.currentUser.updateProfile({ displayName: nickname })
 			}
+			setLoading(false)
 			history.push(goToPage)
 			return
 		}
@@ -40,15 +40,15 @@ export default function Home() {
 			auth.currentUser!.updateProfile({
 				displayName: nickname
 			})
+			setLoading(false)
 			history.push(goToPage)
 		})
-		setLoading(false)
 	}
 
 	return (
+		loading ? <div id="home"><div className="lobbySetup"><Loading /></div></div> :
 		<div id="home">
 			<div className="lobbySetup">
-				<Loading loading={loading} />
 				<form onSubmit={handleSubmit}>
 					<ul>
 						<li>

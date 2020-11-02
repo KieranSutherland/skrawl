@@ -20,7 +20,7 @@ export default function Players(props: any) {
 
 	return (
 		<div className="players" style={{backgroundColor: props.backgroundColor, color: props.color}}>
-			{(props.players as FirebaseLobbyPlayersField).map((player, index) => {
+			{props.players && (props.players as FirebaseLobbyPlayersField).map((player, index) => {
 				return <Player key={index} displayName={player.displayName} displayHostIcon={props.hostUid === player.uid} />
 			})}
 		</div>

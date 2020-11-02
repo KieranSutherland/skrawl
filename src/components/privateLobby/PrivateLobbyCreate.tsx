@@ -46,7 +46,7 @@ export default function PrivateLobbyCreate() {
 			}],
 			password: password,
 			settings: {
-				SFW: false
+				sfw: true
 			}
 		})
 		setLoading(false)

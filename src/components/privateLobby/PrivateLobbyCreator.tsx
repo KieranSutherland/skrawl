@@ -65,6 +65,7 @@ export default function PrivateLobbyCreator() {
 			setRoomCode(doc!.id)
 			setPlayers(doc!.get('players'))
 			setHostUid(doc!.get('host'))
+			setSfw(doc!.get('settings') ? doc!.get('settings')['sfw'] : null)
 		})
 
 		// Once current user is defined, unsubscribe from auth listener
@@ -72,8 +73,13 @@ export default function PrivateLobbyCreator() {
 		// console.log('final currentLobby: ' + JSON.stringify(currentLobby, getCircularReplacer()))
 	}
 
-	const handleSfwChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setSfw((event.target as HTMLInputElement).value === 'true')
+	const handleScenarioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const newBool: boolean = (event.target as HTMLInputElement).value === 'true'
+		firestore.collection('lobbies').doc(roomCode).update({
+			settings: {
+				sfw: newBool
+			}
+		})
 	};
 
 	const handleStartClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -89,7 +95,7 @@ export default function PrivateLobbyCreator() {
 	}
 	
 	return (
-		players && players.length < 1 ? <div className="lobbySetup"><Loading /></div> :
+		roomCode === '????' ? <div className="lobbySetup"><Loading /></div> :
 		<div className="lobbySetup">
 			<BackButton cleanLobbies={true} />
 			<div className="privateLobbyPlayerList">
@@ -114,7 +120,7 @@ export default function PrivateLobbyCreator() {
 								aria-label="scenario_choices"
 								name="scenario_choices1"
 								value={sfw}
-								onChange={handleSfwChange}
+								onChange={handleScenarioChange}
 								style={{ marginLeft: '2%' }}>
 								<FormControlLabel
 									value={true}

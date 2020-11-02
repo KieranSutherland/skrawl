@@ -21,11 +21,15 @@ export default function Home() {
 	const [loading, setLoading] = useState<boolean>(false)
 	var goToPage: string = '/'
 
+	const stopAuthListener = firebase.auth().onAuthStateChanged(user => user ? setNickname(getAuthDisplayName()) : '')
+
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		setLoading(true)
+		stopAuthListener()
 		event.preventDefault()
 		const auth = firebase.auth()
 		if (auth.currentUser) { // if user already exists, skip new sign in
+			console.log('existing')
 			if (auth.currentUser.displayName !== nickname) {
 				auth.currentUser.updateProfile({ displayName: nickname })
 			}
@@ -43,6 +47,7 @@ export default function Home() {
 			setLoading(false)
 			history.push(goToPage)
 		})
+		console.log('testing')
 	}
 
 	return (

@@ -15,7 +15,7 @@
 	width: 80%;
 	padding: 0 5%; 
 	border-bottom: 1px solid #2ba58d62;
-	font-size: 2vmin;
+	font-size: calc(12px + 1vmin); // 12px minimum
 	margin: 0 5%;
 	display: flex;
 	align-items: center; /* vertical */

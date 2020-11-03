@@ -12,7 +12,8 @@
 }
 
 .lobbySetup form {
-	width: 55%;
+	width: 400px;
+	max-width: 80%;
 }
 
 .lobbySetup ul {
@@ -23,8 +24,12 @@
 	list-style-type: none;
 }
 
+$lobbySetup-li-count: 3;
+$lobbySetup-li-height-padding-percent: 20;
+
 .lobbySetup li {
 	text-align: center;
-	margin: 30% 0; // might be problematic if there's more than 3 li
+	margin: ((100 - $lobbySetup-li-height-padding-percent) / $lobbySetup-li-count) + 0% 0;
+	// margin: 30% 0; // might be problematic if there's more than 3 li
 	box-shadow: $drop-box-shadow;
 }

@@ -44,6 +44,7 @@ export default function PrivateLobbyCreator() {
 	const history = useHistory()
 	const [sfw, setSfw] = useState<boolean>(true)
 	const [roomCode, setRoomCode] = useState<string>('????')
+	const [password, setPassword] = useState<string>('????????')
 	const [players, setPlayers] = useState<FirebaseLobbyPlayersField[]>([])
 	const [hostUid, setHostUid] = useState<string>('')
 	const [currentUser, setCurrentUser] = useState<firebase.User | null>(null)
@@ -63,6 +64,7 @@ export default function PrivateLobbyCreator() {
 		
 		firestore.collection('lobbies').doc(currentLobby!.id).onSnapshot(doc => {
 			setRoomCode(doc!.id)
+			setPassword(doc!.get('password'))
 			setPlayers(doc!.get('players'))
 			setHostUid(doc!.get('host'))
 			setSfw(doc!.get('settings') ? doc!.get('settings')['sfw'] : null)
@@ -105,14 +107,13 @@ export default function PrivateLobbyCreator() {
 			<div className="privateLobbySettings">
 				<ul>
 					<li style={{ boxShadow: 'none' }}>
-						<div className="roomCode">
-							Room Code
-							<h1>{roomCode}</h1>
-						</div>
+						Room Code
+						<h1>{roomCode}</h1>
 					</li>
-					{/* <li style={{ boxShadow: 'none' }}>
+					<li style={{ boxShadow: 'none' }}>
 						Password
-					</li> */}
+						<h2>{password}</h2>
+					</li>
 					<li style={{ boxShadow: 'none' }}>
 						<FormControl component="fieldset">
 							Scenario Choices

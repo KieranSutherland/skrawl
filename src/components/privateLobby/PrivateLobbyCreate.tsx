@@ -12,6 +12,7 @@ export default function PrivateLobbyCreate() {
 	const history = useHistory()
 	const [password, setPassword] = useState('')
 	const [loading, setLoading] = useState<boolean>(false)
+	const MAX_PASSWORD_LENGTH = 12
 	const MAX_LOBBIES = 9999
 	const MIN_LOBBIES = 1000
 	var goToPage = '/private-lobby-creator'
@@ -68,6 +69,12 @@ export default function PrivateLobbyCreate() {
 		return num
 	}
 
+	const handlePasswordChange = (password: string) => {
+		if (password.length <= MAX_PASSWORD_LENGTH) {
+			setPassword(password)
+		}
+	}
+
 	return (
 		loading ? <div className="lobbySetup"><Loading /></div> :
 		<div className="lobbySetup">
@@ -78,7 +85,7 @@ export default function PrivateLobbyCreate() {
 						<CustomCssTextField
 							id="outlined-required"
 							value={password}
-							setTextMethod={setPassword}
+							setTextMethod={handlePasswordChange}
 							required={true}
 							autoFocus={true}
 							label="Create password" />

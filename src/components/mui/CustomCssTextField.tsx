@@ -36,6 +36,7 @@ const CustomCssTextField = (props: any) => {
 			<CustomCssTF
 				id={props.id}
 				onChange={e => props.setTextMethod(e.target.value)}
+				onKeyPress={e => {if(props.onKeyPress) props.onKeyPress(e)}}
 				value={props.value}
 				required={props.required}
 				label={props.label}

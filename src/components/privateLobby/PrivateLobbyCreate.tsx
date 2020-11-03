@@ -41,14 +41,16 @@ export default function PrivateLobbyCreate() {
 		const roomCode: number = await findUnusedRoomCode(lobbies)
 		firestore.collection('lobbies').doc(roomCode.toString()).set({
 			host: firebase.auth().currentUser?.uid,
+			password: password,
+			gameStarted: false,
 			players: [{
 				uid: firebase.auth().currentUser?.uid,
 				displayName: firebase.auth().currentUser?.displayName
 			}],
-			password: password,
+			messages: [],
 			settings: {
 				sfw: true
-			}
+			},
 		})
 		setLoading(false)
 		history.push(goToPage)

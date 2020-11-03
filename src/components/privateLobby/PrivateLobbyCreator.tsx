@@ -40,7 +40,7 @@ const getCircularReplacer = () => {
 }
 
 export default function PrivateLobbyCreator() {
-	const firestore = firebase.firestore(); // change to use explicit import at some point
+	const firestore = firebase.firestore() // change to use explicit import at some point
 	const history = useHistory()
 	const [sfw, setSfw] = useState<boolean>(true)
 	const [roomCode, setRoomCode] = useState<string>('????')
@@ -48,7 +48,7 @@ export default function PrivateLobbyCreator() {
 	const [players, setPlayers] = useState<FirebaseLobbyPlayersField[]>([])
 	const [hostUid, setHostUid] = useState<string>('')
 	const [currentUser, setCurrentUser] = useState<firebase.User | null>(null)
-	const MIN_PLAYERS = 4
+	const MIN_PLAYERS = 2 // set to 4 for production
 	const MAX_PLAYERS = 64
 
 	const stopAuthListener = firebase.auth().onAuthStateChanged(user => setCurrentUser(user))
@@ -57,7 +57,7 @@ export default function PrivateLobbyCreator() {
 		setupLobbyListener()
 	}, [currentUser])
 
-	async function setupLobbyListener() {
+	const setupLobbyListener = async () => {
 		if (!currentUser) return
 		const currentLobby = await firebaseHelper.getCurrentLobbyOfUser(currentUser!, history)
 		if (!currentLobby) return
@@ -68,6 +68,9 @@ export default function PrivateLobbyCreator() {
 			setPlayers(doc!.get('players'))
 			setHostUid(doc!.get('host'))
 			setSfw(doc!.get('settings') ? doc!.get('settings')['sfw'] : null)
+			if (doc!.get('gameStarted') as boolean) {
+				history.push('/game')
+			}
 		})
 
 		// Once current user is defined, unsubscribe from auth listener
@@ -92,8 +95,9 @@ export default function PrivateLobbyCreator() {
 			alert(`You need less than ${MAX_PLAYERS} players to start a game`)
 			return
 		}
-		// set lobby settings and some boolean to say game has started
-		history.push('/game')
+		firestore.collection('lobbies').doc(roomCode).update({
+			gameStarted: true
+		})
 	}
 	
 	return (
@@ -102,7 +106,7 @@ export default function PrivateLobbyCreator() {
 			<BackButton cleanLobbies={true} />
 			<div className="privateLobbyPlayerList">
 				{/* Players: (11/16) */}
-				<Players players={players} backgroundColor={'#444444'} color={'#ffffff'} hostUid={hostUid} />
+				<Players players={players} hostUid={hostUid} />
 			</div>
 			<div className="privateLobbySettings">
 				<ul>

@@ -9,11 +9,13 @@
 	position: relative;
 }
 
+$canvas-header-color: #bebebe;
+
 .canvasHeader {
 	width: 100%;
 	height: 9.2%;
 	box-sizing: border-box;
-	background-color: #cacaca;
+	background-color: $canvas-header-color;
 	position: relative;
 	text-align: center;
 }
@@ -69,11 +71,11 @@ $ct-img-width-margin: 1vmin;
 	width: calc((#{$ct-img-width} * counter(canvasToolsImg)) + (#{$ct-img-width-margin} * 2 * counter(canvasToolsImg)));
 	height: 6%;
 	position: absolute;
+	display: flex;
+	align-items: center; /* vertical */
 	top:0;
 	left:0;
-	text-align: justify;
-	display: inline-block;
-	background-color: #cacaca;
+	background-color: $canvas-header-color;
 	border-right: 3px solid #9fd8cd;
 	border-bottom: 3px solid #9fd8cd;
 	z-index: 15; // enough to override z-index for canvas drawings

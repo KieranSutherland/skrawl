@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Player from './Player'
 
 export default function Players(props: any) {
@@ -15,13 +15,17 @@ export default function Players(props: any) {
 		{displayName: 'sebastian', uid: 'saf0s7adfas99'}, 
 		{displayName: 'adam', uid: 'saf0s7adfas11'}, 
 		{displayName: 'steve', uid: 'saf0s7adfas12'}, 
-		{displayName: 'gregory', uid: 'saf0s7adfas14'},
+		{displayName: 'gregory', uid: 'saf0s7adfas14'}
 		]) // temporary while db isn't setup
 
 	return (
-		<div className="players" style={{backgroundColor: props.backgroundColor, color: props.color}}>
+		<div className="players">
 			{props.players && (props.players as FirebaseLobbyPlayersField).map((player, index) => {
-				return <Player key={index} displayName={player.displayName} displayHostIcon={props.hostUid === player.uid} />
+				return <Player 
+					key={index} 
+					displayName={player.displayName} 
+					displayHostIcon={props.hostUid === player.uid}
+					finishedRound={true} />
 			})}
 		</div>
 	)

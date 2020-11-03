@@ -31,10 +31,10 @@ export default function Canvas() {
 				hideInterface={true}
 			/>
 			<div className="canvasTools">
-				<img className="canvasToolsImg" src={undoIcon} alt="Undo" onClick={() => canvas?.undo()} />
-				<img className="canvasToolsImg" src={clearIcon} alt="Clear" onClick={() => canvas?.clear()} />
-				<img className="canvasToolsImg smallBrush" src={brushSizeIcon} alt="Small brush" onClick={() => setBrushSize(smallBrushSize)} />
-				<img className="canvasToolsImg" src={brushSizeIcon} alt="Large brush" onClick={() => setBrushSize(largeBrushSize)} />
+					<img className="canvasToolsImg" src={undoIcon} alt="Undo" onClick={() => canvas?.undo()} />
+					<img className="canvasToolsImg" src={clearIcon} alt="Clear" onClick={() => canvas?.clear()} />
+					<img className="canvasToolsImg smallBrush" src={brushSizeIcon} alt="Small brush" onClick={() => setBrushSize(smallBrushSize)} />
+					<img className="canvasToolsImg" src={brushSizeIcon} alt="Large brush" onClick={() => setBrushSize(largeBrushSize)} />
 			</div>
 		</div>
 	)

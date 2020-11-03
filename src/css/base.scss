@@ -1,5 +1,7 @@
 $accent-color: #2ba58d;
-$testing-color: #494949;
+$container-background-color: #444444;
+$container-text-color: #ffffff;
+$testing-color: #0a0302;
 
 $drop-box-shadow: 
 0 3.3px 2.2px rgba(0, 0, 0, 0.08),
@@ -23,6 +25,16 @@ body {
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
 		monospace;
+}
+
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	background-color: #686868;
 }
 
 @import 'header';

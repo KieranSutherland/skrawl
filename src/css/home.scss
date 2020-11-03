@@ -6,7 +6,7 @@
 	display: flex;
     align-items: center; /* vertical */
     justify-content: center; /* horizontal */
-	background-color: rgb(68, 68, 68);
+	background-color: $container-background-color;
 	box-shadow: $drop-box-shadow;
 	position: relative;
 }

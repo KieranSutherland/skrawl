@@ -36,7 +36,7 @@ export const removeUserFromAllLobbies = async (user: firebase.User): Promise<any
 	return Promise.all(lobbyRemovalPromises)
 }
 
-export const getCurrentLobbyOfUser = async (user: firebase.User, history: any): Promise<FirebaseQueryDocumentSnapshot | undefined> => {
+export const getCurrentLobbyOfUser = async (user: firebase.User, history: any | null): Promise<FirebaseQueryDocumentSnapshot | undefined> => {
 	const firestore = firebase.firestore();
 	const lobbies: FirebaseCollectionRefData = firestore.collection('lobbies')
 	const currentUserUid: string = user?.uid!
@@ -45,7 +45,7 @@ export const getCurrentLobbyOfUser = async (user: firebase.User, history: any): 
 			return (doc.get('players') as { uid: any, displayName: any }[]).find(player => player['uid'] === currentUserUid)
 		})
 	})
-	if (currentLobbies.length !== 1) {
+	if (currentLobbies.length !== 1 && history) {
 		alert(`Sorry, we couldn't obtain a unique lobby with that information. (${currentLobbies.length} found)`)
 		history.push('/')
 		return

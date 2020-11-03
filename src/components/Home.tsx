@@ -20,7 +20,7 @@ export default function Home() {
 	var goToPage: string = '/'
 
 	// const stopAuthListener = firebase.auth().onAuthStateChanged(user => user && nickname === '' ? setNickname(getAuthDisplayName()) : stopAuthListener())
-	
+
 	// useEffect(() => {
 	// 	if (nickname !== '') {
 	// 		stopAuthListener()
@@ -56,44 +56,43 @@ export default function Home() {
 			setNickname(nickname)
 		}
 	}
-
 	return (
 		loading ? <div id="home"><div className="lobbySetup"><Loading /></div></div> :
-		<div id="home">
-			<div className="lobbySetup">
-				<form onSubmit={handleSubmit}>
-					<ul>
-						<li>
-							<CustomCssTextField
-								id="outlined-required"
-								value={nickname}
-								setTextMethod={handleNicknameChange}
-								required={true}
-								label="Nickname"
-								autoFocus={true} />
-						</li>
-						<li>
-							<div onClick={() => goToPage = "game"}>
-								<CustomCssButton
-									text="Public Lobby"
-									width="100%"
-									height="8vh"
-									fontSize="3vmin" />
-							</div>
-						</li>
-						<li>
-							<div onClick={() => goToPage = "private-lobby"}>
-								<CustomCssButton
-									text="Private Lobby"
-									width="100%"
-									height="8vh"
-									fontSize="3vmin" />
-							</div>
-						</li>
-					</ul>
-				</form>
+			<div id="home">
+				<div className="lobbySetup">
+					<form onSubmit={handleSubmit}>
+						<ul>
+							<li>
+								<CustomCssTextField
+									id="outlined-required"
+									value={nickname}
+									setTextMethod={handleNicknameChange}
+									required={true}
+									label="Nickname"
+									autoFocus={true} />
+							</li>
+							<li>
+								<div onClick={() => goToPage = "game"}>
+									<CustomCssButton
+										text="Public Lobby"
+										width="100%"
+										height="8vh"
+										fontSize="3vmin" />
+								</div>
+							</li>
+							<li>
+								<div onClick={() => goToPage = "private-lobby"}>
+									<CustomCssButton
+										text="Private Lobby"
+										width="100%"
+										height="8vh"
+										fontSize="3vmin" />
+								</div>
+							</li>
+						</ul>
+					</form>
+				</div>
 			</div>
-		</div>
-	);
+	)
 }
 

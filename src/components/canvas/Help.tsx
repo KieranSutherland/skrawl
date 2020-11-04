@@ -7,12 +7,12 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import helpIcon from '../../resources/help.png'
 
-export default function Help(props: any) {
+export default function Help() {
 	const [showHelp, setShowHelp] = useState(false);
 
 	return (
-		<div>
-			<img src={helpIcon} alt="Help" style={{height: props.height}} onClick={() => setShowHelp(true)} />
+		<div className="help">
+			<img src={helpIcon} alt="Help" style={{height: '2vh'}} onClick={() => setShowHelp(true)} />
 			<Dialog
 				maxWidth={'md'}
 				open={showHelp}
@@ -20,7 +20,7 @@ export default function Help(props: any) {
 				aria-labelledby="alert-dialog-title"
 			>
 				<DialogTitle id="alert-dialog-title">Instructions</DialogTitle>
-				<DialogContent dividers>
+				<DialogContent>
 				<DialogContentText>
 					{"The best way to think about this game is to compare it to chinese whispers but in a drawing format."}
 				</DialogContentText>
@@ -46,6 +46,15 @@ export default function Help(props: any) {
 					+ "of the game has ended. You can then see a playback of each person's drawing's journey through the players "
 					+ "and see how badly or surprisingly well the original concept stuck throughout."}
 				</DialogContentText>
+				</DialogContent>
+				<DialogTitle id="alert-dialog-title">Buttons</DialogTitle>
+				<DialogContent>
+					<DialogContentText>
+						{"SCENARIO: Show the current scenario assigned to you for you to guess/draw."}
+					</DialogContentText>
+					<DialogContentText>
+						{"SUBMIT: Submit your current guess/drawing and end your turn for the round."}
+					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
 				<Button onClick={() => setShowHelp(false)} color="primary" autoFocus>

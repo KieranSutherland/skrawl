@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import Message from './Message'
+import React from 'react'
 
 export default function MessageLog(props: any) {
 	// const [messages, setMessages] = useState<Message[]>([
@@ -30,16 +29,6 @@ export default function MessageLog(props: any) {
 	// 		new Message('steve', 'test message'),
 	// 		new Message('toby', 'test message')
 	// ])
-
-	// useEffect(() => {
-	// 	if(socketRef) {
-	// 		socketRef.current = io.connect('/')
-	// 		socketRef.current.on("message", (message: Message) => {
-	// 			console.log('Received message')
-	// 			setMessages(oldMsgs => [message, ...oldMsgs])
-	// 		})
-	// 	}
-	// }, [])
 
 	return (
 		<div className="messageLog">

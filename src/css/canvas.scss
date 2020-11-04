@@ -18,30 +18,37 @@ $canvas-header-color: #bebebe;
 	background-color: $canvas-header-color;
 	position: relative;
 	text-align: center;
+	display: flex;
+	align-items: center; /* vertical */
 }
 
 .canvasHeader ul {
-	list-style-type: none;
+	width: 75%;
+	position: absolute;
+	right: 0;
 	margin: 0;
 	padding: 0;
+	list-style-type: none;
+	display: inline-block;
 }
 
 .canvasHeader li {
-	display: inline-flex;
-	text-align: center;
-	font-weight: bold;
-	font-size: 3.2vh;
-	margin: 1.1% 5% 0 5%;
+	width: 28%;
+	display: inline-block;
+	margin: 0 10%;
 }
 
 .round {
 	position: absolute;
 	width: max-content;
-	top:0;
 	left:0;
-	margin: 1.2% 0.5% 0 2%;
-	font-size: 3.5vh;
+	margin-left: 2%;
+	font-size: calc(8px + 1.4vw);
 	font-weight: bold;
+}
+
+.submit, .scenario {
+	width: 100%;
 }
 
 .help {

@@ -33,6 +33,13 @@ export default function PrivateLobbyJoin() {
 			alert('Lobby with that room code and password does not exist')
 			return
 		}
+
+		// Check if lobby has already started
+		if (lobby.get('started')) {
+			setLoading(false)
+			alert('This lobby\'s game has already started')
+			return
+		}
 		
 		// Add user to players list of lobby
 		const lobbyPlayers: any[] = await (await firestore.collection('lobbies').doc(roomCode).get()).get('players')

@@ -8,7 +8,7 @@ function click() {
 export default function Scenario() {
 	return (
 		<div className="scenario">
-			<CustomCssButton text="Scenario" width="100%" height="4vh" fontSize="calc(10px + 0.5vw)" onClick={click} />
+			<CustomCssButton text="Scenario" width="100%" height="4.2vh" fontSize="calc(10px + 0.5vw)" onClick={click} />
 		</div>
 	)
 }

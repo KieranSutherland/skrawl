@@ -8,7 +8,7 @@ function click() {
 export default function Submit() {
 	return (
 		<div className="submit">
-			<CustomCssButton text="Submit" width="100%" height="4vh" fontSize="calc(10px + 0.5vw)" onClick={click} />
+			<CustomCssButton text="Submit" width="100%" height="4.2vh" fontSize="calc(10px + 0.5vw)" onClick={click} />
 		</div>
 	)
 }

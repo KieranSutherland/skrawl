@@ -15,6 +15,7 @@ export default function PrivateLobbyCreate() {
 	const MAX_PASSWORD_LENGTH = 12
 	const MAX_LOBBIES = 9999
 	const MIN_LOBBIES = 1000
+	const DEFAULT_ROUND_TIMER: number = 90
 	var goToPage = '/private-lobby-creator'
 	
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -42,15 +43,15 @@ export default function PrivateLobbyCreate() {
 		firestore.collection('lobbies').doc(roomCode.toString()).set({
 			host: firebase.auth().currentUser?.uid,
 			password: password,
-			gameStarted: false,
+			started: false,
 			players: [{
 				uid: firebase.auth().currentUser?.uid,
 				displayName: firebase.auth().currentUser?.displayName
 			}],
 			messages: [],
-			settings: {
-				sfw: true
-			},
+			currentRound: 1,
+			sfw: true,
+			roundTimer: DEFAULT_ROUND_TIMER
 		})
 		setLoading(false)
 		history.push(goToPage)

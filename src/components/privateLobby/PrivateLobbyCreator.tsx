@@ -48,8 +48,8 @@ export default function PrivateLobbyCreator() {
 	const [players, setPlayers] = useState<FirebaseLobbyPlayersField[]>([])
 	const [hostUid, setHostUid] = useState<string>('')
 	const [currentUser, setCurrentUser] = useState<firebase.User | null>(null)
-	const MIN_PLAYERS = 2 // set to 4 for production
-	const MAX_PLAYERS = 64
+	const MIN_PLAYERS: number = 2 // set to 4 for production
+	const MAX_PLAYERS: number = 64
 
 	const stopAuthListener = firebase.auth().onAuthStateChanged(user => setCurrentUser(user))
 	
@@ -59,31 +59,31 @@ export default function PrivateLobbyCreator() {
 
 	const setupLobbyListener = async () => {
 		if (!currentUser) return
+		// Once current user is defined, unsubscribe from auth listener
+		stopAuthListener()
+
 		const currentLobby = await firebaseHelper.getCurrentLobbyOfUser(currentUser!, history)
 		if (!currentLobby) return
-		
-		firestore.collection('lobbies').doc(currentLobby!.id).onSnapshot(doc => {
+
+		const unsubscribeSnapshotListener = firestore.collection('lobbies').doc(currentLobby!.id).onSnapshot(doc => {
 			setRoomCode(doc!.id)
 			setPassword(doc!.get('password'))
 			setPlayers(doc!.get('players'))
 			setHostUid(doc!.get('host'))
-			setSfw(doc!.get('settings') ? doc!.get('settings')['sfw'] : null)
-			if (doc!.get('gameStarted') as boolean) {
+			setSfw(doc!.get('sfw'))
+			if (doc!.get('started') as boolean) {
+				unsubscribeSnapshotListener()
 				history.push('/game')
 			}
 		})
 
-		// Once current user is defined, unsubscribe from auth listener
-		stopAuthListener()
 		// console.log('final currentLobby: ' + JSON.stringify(currentLobby, getCircularReplacer()))
 	}
 
 	const handleScenarioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const newBool: boolean = (event.target as HTMLInputElement).value === 'true'
 		firestore.collection('lobbies').doc(roomCode).update({
-			settings: {
-				sfw: newBool
-			}
+			sfw: newBool
 		})
 	}
 
@@ -96,7 +96,8 @@ export default function PrivateLobbyCreator() {
 			return
 		}
 		firestore.collection('lobbies').doc(roomCode).update({
-			gameStarted: true
+			started: true,
+			maxRound: players.length
 		})
 	}
 	
@@ -105,7 +106,7 @@ export default function PrivateLobbyCreator() {
 		<div className="lobbySetup">
 			<BackButton cleanLobbies={true} />
 			<div className="privateLobbyPlayerList">
-				{/* Players: (11/16) */}
+				{/* Players: (11/64) */}
 				<Players players={players} hostUid={hostUid} />
 			</div>
 			<div className="privateLobbySettings">

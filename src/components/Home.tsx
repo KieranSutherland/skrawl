@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react'
 import CustomCssButton from './mui/CustomCssButton'
 import CustomCssTextField from './mui/CustomCssTextField'
 import Loading from './Loading'
-import { useHistory } from "react-router-dom"
+import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
+import * as firebaseHelper from '../utils/firebaseHelper'
 
 const getAuthDisplayName = () => {
 	if (firebase.auth().currentUser && firebase.auth().currentUser!.displayName != null) {
@@ -26,6 +27,16 @@ export default function Home() {
 	// 		stopAuthListener()
 	// 	}
 	// }, [nickname])
+
+	useEffect(() => {
+		// If there is a user, make sure they leave any lobby they were in
+		if (firebase.auth().currentUser) {
+			(async () => {
+				await firebaseHelper.removeUserFromAllLobbies(firebase.auth().currentUser!)
+				await firebaseHelper.deleteEmptyLobbies()
+			})()
+		}
+	})
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		setLoading(true)

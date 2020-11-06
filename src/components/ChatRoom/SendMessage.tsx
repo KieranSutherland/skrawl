@@ -31,7 +31,6 @@ export default function SendMessage() {
 		if (!roomCode || !currentUser || !currentUser!.displayName) {
 			console.log('can\'t find room code or user, skipping message send')
 		}
-		console.log('sending message: ' + message)
 		var newMessages: FirebaseLobbyMessagesField = await (await firestore.collection('lobbies').doc(roomCode!).get()).get('messages')
 		if (!newMessages) {
 			newMessages = []

@@ -6,8 +6,8 @@ import Timer from './Timer'
 export default function CanvasMain(props: any) {
 	return (
 		<div className="canvasMain">
-			<CanvasHeader currentRound={props.currentRound} maxRound={props.maxRound} />
-			<Timer roundTimer={props.roundTimer} roomCode={props.roomCode} />
+			<CanvasHeader currentLobby={props.currentLobby} roomCode={props.roomCode} />
+			<Timer currentLobby={props.currentLobby} roomCode={props.roomCode} />
 			<Canvas />
 		</div>
 	)

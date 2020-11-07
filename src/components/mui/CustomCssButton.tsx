@@ -22,7 +22,8 @@ export default function CustomCssButton(props: any) {
 		<div>
 			<CustomBtn 
 				variant="contained" 
-				type="submit" >
+				type="submit"
+				onClick={props.onClick} >
 					{props.text}
 			</CustomBtn>
 		</div>

@@ -18,44 +18,55 @@ const CustomCssLinearProgress = withStyles({
 
 
 export default function Timer(props: any) {
+	const roundTimer = props.currentLobby['roundTimer']
 	const firestore = firebase.firestore()
 	const history = useHistory()
-	var targetDateTime = new Date(new Date().getTime() + (props.roundTimer * 1000))
+	var targetDateTime: Date = new Date(new Date().getTime() + (roundTimer * 1000))
 	const [progress, setProgress] = useState(0);
 
 	useEffect(() => {
-		if (props.roundTimer) {
+		if (roundTimer) {
+			targetDateTime = new Date(new Date().getTime() + (roundTimer * 1000))
 			const timer = setInterval(() => {
 				setProgress((oldProgress) => {
 					const secondsRemaining = (targetDateTime.getTime() - new Date().getTime()) / 1000
 					if (secondsRemaining <= 0) {
-						// START NEW ROUND
 						startNewRound()
-						targetDateTime = new Date(new Date().getTime() + (props.roundTimer * 1000))
+						targetDateTime = new Date(new Date().getTime() + (roundTimer * 1000))
 						return 0
 					}
-					return 100 - (secondsRemaining / props.roundTimer * 100) // progress percentage
+					return 100 - (secondsRemaining / roundTimer * 100) // progress percentage
 				});
-			}, 300); // delay before next progress update
+			}, 300); // delay before next progress update on UI
 	
 			// executed when unmounting
 			return () => {
 				clearInterval(timer);
 			};
 		}
-	}, [props]);
+		// roomCode to initially update props, currentRound to force new round as soon as one user's timer finishes to try avoid desync
+	}, [props.roomCode, props.currentLobby['currentRound']]); 
 
 	const startNewRound = async () => {
-		var newRound: number | null = await firestore.collection('lobbies').doc(props.roomCode).get().then(snapshot => {
-			return snapshot.get('currentRound')
+		const lobbyRef = await firestore.collection('lobbies').doc(props.roomCode)
+		var roundData: [number | null, FirebaseLobbyPlayersField] = await lobbyRef.get().then(lobby => {
+			return [lobby.get('currentRound'), lobby.get('players')]
 		})
-		if (!newRound) {
+
+		if (!roundData || !roundData[0] || !roundData[1]) {
 			alert('Something went horribly wrong, we couldn\'t obtain the current round info, returning you back to home page...')
 			history.push('/')
+			return
 		}
-		newRound!++
-		firestore.collection('lobbies').doc(props.roomCode).update({
-			currentRound: newRound
+
+		const newRound = roundData[0] + 1
+		const players = roundData[1]
+
+		players.forEach(player => player.finishedRound = false)
+
+		lobbyRef.update({
+			currentRound: newRound,
+			players: players
 		})
 	}
 

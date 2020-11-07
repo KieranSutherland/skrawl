@@ -8,7 +8,7 @@ export default function ChatRoom(props: any) {
 			<div className="chatRoomHeader">
 				Chat
 			</div>
-			<MessageLog messages={props.messages} />
+			<MessageLog messages={props.currentLobby['messages']} />
 			<SendMessage />
 		</div>
 	)

@@ -7,9 +7,12 @@ export default function Loading() {
 	const [showStuckText, setShowStuckText] = useState<boolean>(false)
 
 	useEffect(() => {
-		setTimeout(() => {
+		const timeout = setTimeout(() => {
 			setShowStuckText(true)
 		}, 3000); // 3 seconds
+		return () => {
+            clearTimeout(timeout)
+          }
 	}, [])
 
 	return (

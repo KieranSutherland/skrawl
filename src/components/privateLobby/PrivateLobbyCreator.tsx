@@ -7,7 +7,8 @@ import { withStyles } from '@material-ui/core/styles';
 import Radio, { RadioProps } from '@material-ui/core/Radio'
 import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import FormControl from '@material-ui/core/FormControl'
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import { useHistory } from "react-router-dom"
 import firebase from 'firebase/app'
 import * as firebaseHelper from '../../utils/firebaseHelper'
@@ -120,24 +121,24 @@ export default function PrivateLobbyCreator() {
 						<h2>{password}</h2>
 					</li>
 					<li style={{ boxShadow: 'none' }}>
-						<FormControl component="fieldset">
-							Scenario Choices
-							<RadioGroup
-								aria-label="scenario_choices"
-								name="scenario_choices1"
-								value={sfw}
-								onChange={handleScenarioChange}
-								style={{ marginLeft: '2%' }}>
-								<FormControlLabel
-									value={true}
-									control={<CustomCssRadio disabled={currentUser?.uid !== hostUid} />}
-									label="SFW" />
-								<FormControlLabel
-									value={false}
-									control={<CustomCssRadio disabled={currentUser?.uid !== hostUid} />}
-									label="NSFW" />
-							</RadioGroup>
-						</FormControl>
+						Scenario Choices
+						<RadioGroup
+							row={true}
+							aria-label="scenario_choices"
+							name="scenario_choices1"
+							value={sfw}
+							onChange={handleScenarioChange}
+							style={{ display: 'flex', justifyContent: 'center' }}>
+							<FormControlLabel
+								value={true}
+								control={<CustomCssRadio disabled={currentUser?.uid !== hostUid} />}
+								label="SFW" />
+							<FormControlLabel
+								style={{marginRight: '0'}}
+								value={false}
+								control={<CustomCssRadio disabled={currentUser?.uid !== hostUid} />}
+								label="NSFW" />
+						</RadioGroup>
 					</li>
 					{
 						currentUser?.uid === hostUid ?

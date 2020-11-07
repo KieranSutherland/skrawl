@@ -8,3 +8,8 @@ $loading-size: 15vmin;
 	align-items: center; /* vertical */
 	justify-content: center; /* horizontal */
 }
+
+.loadingStuck {
+	position: absolute;
+	margin-top: 22vmin;
+}

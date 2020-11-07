@@ -41,6 +41,11 @@ export default function Home() {
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		setLoading(true)
 		event.preventDefault()
+		if (goToPage === 'game') { // IMPLEMENT PUBLIC LOBBIES
+			setLoading(false)
+			alert('Sorry, the public lobby feature isn\'t devleoped yet, please use private lobbies')
+			return
+		}
 		const auth = firebase.auth()
 		if (auth.currentUser) { // if user already exists, skip new sign in
 			if (auth.currentUser.displayName !== nickname) {

@@ -17,8 +17,7 @@ export default function Help() {
 				maxWidth={'md'}
 				open={showHelp}
 				onClose={() => setShowHelp(false)}
-				aria-labelledby="alert-dialog-title"
-			>
+				aria-labelledby="alert-dialog-title">
 				<DialogTitle id="alert-dialog-title">Instructions</DialogTitle>
 				<DialogContent>
 				<DialogContentText>

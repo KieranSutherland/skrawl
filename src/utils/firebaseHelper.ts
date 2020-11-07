@@ -24,10 +24,26 @@ export const removeUserFromAllLobbies = async (user: firebase.User): Promise<any
 	var lobbyRemovalPromises: any[] = [] // collect removal promises to perform in one batch at the end for performance
 	await lobbies.get().then(col => {
 		col.docs.forEach(lobby => {
-			if ((lobby.get('players') as FirebaseLobbyPlayersField).find(player => player['uid'] === currentUserUid)) {
+			const lobbyPlayers: FirebaseLobbyPlayersField = lobby.get('players')
+			if (lobbyPlayers.find(player => player['uid'] === currentUserUid)) {
+				const newPlayersList = (lobby.get('players') as FirebaseLobbyPlayersField).filter(player => player['uid'] !== currentUserUid)
+				// if player leaving is the host, pick new host and remove old host from lobby
+				if (lobby.get('host') === currentUserUid && lobbyPlayers.length > 1) {
+					const newHost = lobbyPlayers.find(player => player.uid !== currentUserUid)?.uid
+					if (newHost) {
+						lobbyRemovalPromises.push(
+							lobbies.doc(lobby.id).update({
+								players: newPlayersList,
+								host: newHost
+							})
+						)
+						return
+					}
+				}
+				// if player leaving isn't host, remove user from lobby normally
 				lobbyRemovalPromises.push(
 					lobbies.doc(lobby.id).update({
-						players: (lobby.get('players') as FirebaseLobbyPlayersField).filter(player => player['uid'] !== currentUserUid)
+						players: newPlayersList
 					})
 				)
 			}

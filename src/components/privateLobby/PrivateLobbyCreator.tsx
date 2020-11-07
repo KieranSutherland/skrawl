@@ -108,7 +108,7 @@ export default function PrivateLobbyCreator() {
 			<BackButton cleanLobbies={true} />
 			<div className="privateLobbyPlayerList">
 				{/* Players: (11/64) */}
-				<Players players={players} hostUid={hostUid} />
+				<Players players={players} currentUserUid={currentUser ? currentUser.uid : ''} hostUid={hostUid} />
 			</div>
 			<div className="privateLobbySettings">
 				<ul>

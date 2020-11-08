@@ -9,10 +9,8 @@ export default function CanvasHeader(props: any) {
 			<div className="round">
 				ROUND: {props.currentLobby['currentRound']}/{props.currentLobby['maxRound']}
 			</div>
-			<ul>
-				<li><Scenario roomCode={props.roomCode} /></li>
-				<li><Submit roomCode={props.roomCode} /></li>
-			</ul>
+			<Scenario currentLobby={props.currentLobby} roomCode={props.roomCode} currentUserUid={props.currentUserUid} />
+			<Submit roomCode={props.roomCode} />
 			<Help />
 		</div>
 	)

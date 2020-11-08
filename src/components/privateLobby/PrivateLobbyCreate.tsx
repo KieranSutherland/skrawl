@@ -15,7 +15,7 @@ export default function PrivateLobbyCreate() {
 	const MAX_PASSWORD_LENGTH = 12
 	const MAX_LOBBIES = 9999
 	const MIN_LOBBIES = 1000
-	const DEFAULT_ROUND_TIMER: number = 10 // SET TO 80 FOR PRODUCTION
+	const DEFAULT_ROUND_TIMER: number = 80 // SET TO 80 FOR PRODUCTION
 	var goToPage = '/private-lobby-creator'
 	
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

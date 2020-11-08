@@ -25,6 +25,7 @@ export const removeUserFromAllLobbies = async (user: firebase.User): Promise<any
 	await lobbies.get().then(col => {
 		col.docs.forEach(lobby => {
 			const lobbyPlayers: FirebaseLobbyPlayersField = lobby.get('players')
+			const newMaxRound: number = lobby.get('maxRound') - 1
 			if (lobbyPlayers.find(player => player['uid'] === currentUserUid)) {
 				const newPlayersList = (lobby.get('players') as FirebaseLobbyPlayersField).filter(player => player['uid'] !== currentUserUid)
 				// if player leaving is the host, pick new host and remove old host from lobby
@@ -34,7 +35,8 @@ export const removeUserFromAllLobbies = async (user: firebase.User): Promise<any
 						lobbyRemovalPromises.push(
 							lobbies.doc(lobby.id).update({
 								players: newPlayersList,
-								host: newHost
+								host: newHost,
+								maxRound: newMaxRound
 							})
 						)
 						return
@@ -43,13 +45,21 @@ export const removeUserFromAllLobbies = async (user: firebase.User): Promise<any
 				// if player leaving isn't host, remove user from lobby normally
 				lobbyRemovalPromises.push(
 					lobbies.doc(lobby.id).update({
-						players: newPlayersList
+						players: newPlayersList,
+						maxRound: newMaxRound
 					})
 				)
 			}
 		})
 	})
 	return Promise.all(lobbyRemovalPromises)
+}
+
+export const getPlayerFieldOfUser = async (userUid: string, roomCode: string): Promise<FirebaseLobbyPlayerField | undefined> => {
+	const firestore = firebase.firestore();
+	return firestore.collection('lobbies').doc(roomCode).get().then(lobby => {
+		return (lobby.get('players') as FirebaseLobbyPlayersField).find(player => player.uid === userUid)
+	})
 }
 
 export const getCurrentLobbyOfUser = async (user: firebase.User, history: any | null): Promise<FirebaseQueryDocumentSnapshot | undefined> => {

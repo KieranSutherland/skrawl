@@ -17,33 +17,39 @@ export default function Game() {
 	const stopAuthListener = firebase.auth().onAuthStateChanged(user => setCurrentUser(user))
 
 	// Ask the user if they're sure they want to refresh as it'll send them back to the home page
-	window.onbeforeunload = (e: any) => e.preventDefault() // does this actually work?
+	window.onbeforeunload = (e: any) => e.preventDefault() // doesn't work?
 
 	useEffect(() => {
-		setupGameListener()
+		setup()
 	}, [currentUser])
 
-	const setupGameListener = async () => {
+	const setup = async () => {
 		if (!currentUser) return
+		// Once current user is defined, unsubscribe from auth listener
+		stopAuthListener()
+
 		const currentLobby = await firebaseHelper.getCurrentLobbyOfUser(currentUser!, history)
 		if (!currentLobby) return
 
-		const unsubscribeSnapshotListener = firestore.collection('lobbies').doc(currentLobby!.id).onSnapshot(doc => {
+		const lobbyRef = firestore.collection('lobbies').doc(currentLobby!.id)
+		setupSnapshotListener(lobbyRef)
+		// console.log('final currentLobby: ' + JSON.stringify(currentLobby, getCircularReplacer()))
+	}
+
+	const setupSnapshotListener = (lobbyRef: FirebaseDocumentRefData) => {
+		const unsubscribeSnapshotListener = lobbyRef.onSnapshot(doc => {
 			// if player is no longer in the lobby, stop the listener
-			if (!(doc!.get('players') as FirebaseLobbyPlayersField).map(player => player.uid).find(uid => uid === currentUser.uid)) {
+			if (!(doc!.get('players') as FirebaseLobbyPlayersField).map(player => player.uid).find(uid => uid === currentUser?.uid)) {
 				unsubscribeSnapshotListener()
 			}
-			setCurrentLobby(doc!.data())
-			setRoomCode(doc!.id)
 			if (doc!.get('started') === false) {
 				unsubscribeSnapshotListener()
 				alert('Game hasn\'t started, you shouldn\'t be here!')
 				history.push('/')
 			}
+			setRoomCode(doc!.id)
+			setCurrentLobby(doc!.data()) // make sure this is set last so the other props are ready
 		})
-		// Once current user is defined, unsubscribe from auth listener
-		stopAuthListener()
-		// console.log('final currentLobby: ' + JSON.stringify(currentLobby, getCircularReplacer()))
 	}
 
 	return (
@@ -53,6 +59,7 @@ export default function Game() {
 				<Players players={currentLobby['players']} currentUserUid={currentUser ? currentUser.uid : ''} />
 			</div>
 			<CanvasMain 
+				currentUserUid={currentUser ? currentUser.uid : ''}
 				currentLobby={currentLobby}
 				roomCode={roomCode} />
 			<div className="chatRoomDiv">

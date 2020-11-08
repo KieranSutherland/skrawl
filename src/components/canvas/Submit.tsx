@@ -23,7 +23,7 @@ export default function Submit(props: any) {
 
 	return (
 		<div className="submit">
-			<CustomCssButton text="Submit" width="100%" height="4.2vh" fontSize="calc(10px + 0.5vw)" onClick={handleSubmitClick} />
+			<CustomCssButton text="Submit" width="100%" height="4.4vh" fontSize="calc(10px + 0.5vw)" onClick={handleSubmitClick} />
 		</div>
 	)
 }

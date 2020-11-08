@@ -22,22 +22,6 @@ $canvas-header-color: #bebebe;
 	align-items: center; /* vertical */
 }
 
-.canvasHeader ul {
-	width: 75%;
-	position: absolute;
-	right: 0;
-	margin: 0;
-	padding: 0;
-	list-style-type: none;
-	display: inline-block;
-}
-
-.canvasHeader li {
-	width: 26%;
-	display: inline-block;
-	margin: 0 10%;
-}
-
 .round {
 	position: absolute;
 	width: max-content;
@@ -47,8 +31,18 @@ $canvas-header-color: #bebebe;
 	font-weight: bold;
 }
 
-.submit, .scenario {
-	width: 100%;
+.submit {
+	width: 20%;
+	position: absolute;
+	right: 0;
+	margin-right: 5%;
+}
+
+.scenario {
+	width: max-content;
+	display: flex;
+	margin: 0 auto;
+	font-size: calc(7px + 1vmin);
 }
 
 .help {

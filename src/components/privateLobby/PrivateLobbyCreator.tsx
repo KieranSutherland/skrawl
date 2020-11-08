@@ -9,6 +9,7 @@ import RadioGroup from '@material-ui/core/RadioGroup'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+import scenarios from '../../scenarios.json'
 import { useHistory } from "react-router-dom"
 import firebase from 'firebase/app'
 import * as firebaseHelper from '../../utils/firebaseHelper'
@@ -46,7 +47,7 @@ export default function PrivateLobbyCreator() {
 	const [sfw, setSfw] = useState<boolean>(true)
 	const [roomCode, setRoomCode] = useState<string>('????')
 	const [password, setPassword] = useState<string>('????????')
-	const [players, setPlayers] = useState<FirebaseLobbyPlayersField[]>([])
+	const [players, setPlayers] = useState<FirebaseLobbyPlayersField>([])
 	const [hostUid, setHostUid] = useState<string>('')
 	const [currentUser, setCurrentUser] = useState<firebase.User | null>(null)
 	const MIN_PLAYERS: number = 2 // set to 4 for production
@@ -88,7 +89,8 @@ export default function PrivateLobbyCreator() {
 		})
 	}
 
-	const handleStartClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+	const handleStartClick = async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+		event.preventDefault()
 		if (players.length < MIN_PLAYERS) {
 			alert(`You need ${MIN_PLAYERS} or more players to start a game`)
 			return
@@ -96,9 +98,20 @@ export default function PrivateLobbyCreator() {
 			alert(`You need less than ${MAX_PLAYERS} players to start a game`)
 			return
 		}
-		firestore.collection('lobbies').doc(roomCode).update({
+		assignScenariosToPlayers()
+		await firestore.collection('lobbies').doc(roomCode).update({
 			started: true,
-			maxRound: players.length
+			maxRound: players.length,
+			players: players
+		})
+	}
+
+	const assignScenariosToPlayers = () => {
+		const scenariosList = sfw ? scenarios.sfw : scenarios.sfw.concat(scenarios.nsfw)
+		players.forEach(player => {
+			const randomIndex = Math.floor(Math.random() * Math.floor(scenariosList.length))
+			player.scenarioObj = {originPlayer: currentUser!.uid, scenario: scenariosList[randomIndex], phase: 'draw'}
+			scenariosList.splice(randomIndex)
 		})
 	}
 	
@@ -143,8 +156,8 @@ export default function PrivateLobbyCreator() {
 					{
 						currentUser?.uid === hostUid ?
 							<li>
-								<div onClick={handleStartClick}>
-									<CustomCssButton text="Start" width="100%" height="8vh" fontSize="3vh" />
+								<div>
+									<CustomCssButton text="Start" width="100%" height="8vh" fontSize="3vh" onClick={handleStartClick} />
 								</div>
 							</li>
 							:

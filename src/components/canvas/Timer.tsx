@@ -21,18 +21,19 @@ export default function Timer(props: any) {
 	const roundTimer = props.currentLobby['roundTimer']
 	const firestore = firebase.firestore()
 	const history = useHistory()
-	var targetDateTime: Date = new Date(new Date().getTime() + (roundTimer * 1000))
 	const [progress, setProgress] = useState(0);
 
 	useEffect(() => {
 		if (roundTimer) {
-			targetDateTime = new Date(new Date().getTime() + (roundTimer * 1000))
+			if (!window.localStorage.getItem('targetDateTime')) {
+				window.localStorage.setItem('targetDateTime', new Date(new Date().getTime() + (roundTimer * 1000)).getTime().toString())
+			}
 			const timer = setInterval(() => {
 				setProgress((oldProgress) => {
-					const secondsRemaining = (targetDateTime.getTime() - new Date().getTime()) / 1000
+					const secondsRemaining = (parseInt(window.localStorage.getItem('targetDateTime')!) - new Date().getTime()) / 1000
 					if (secondsRemaining <= 0) {
 						startNewRound()
-						targetDateTime = new Date(new Date().getTime() + (roundTimer * 1000))
+						window.localStorage.setItem('targetDateTime', new Date(new Date().getTime() + (roundTimer * 1000)).getTime().toString())
 						return 0
 					}
 					return 100 - (secondsRemaining / roundTimer * 100) // progress percentage

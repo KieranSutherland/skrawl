@@ -25,15 +25,15 @@ export default function Timer(props: any) {
 
 	useEffect(() => {
 		if (roundTimer) {
-			if (!window.localStorage.getItem('targetDateTime')) {
-				window.localStorage.setItem('targetDateTime', new Date(new Date().getTime() + (roundTimer * 1000)).getTime().toString())
+			if (!window.sessionStorage.getItem('targetDateTime')) {
+				window.sessionStorage.setItem('targetDateTime', new Date(new Date().getTime() + (roundTimer * 1000)).getTime().toString())
 			}
 			const timer = setInterval(() => {
 				setProgress((oldProgress) => {
-					const secondsRemaining = (parseInt(window.localStorage.getItem('targetDateTime')!) - new Date().getTime()) / 1000
+					const secondsRemaining = (parseInt(window.sessionStorage.getItem('targetDateTime')!) - new Date().getTime()) / 1000
 					if (secondsRemaining <= 0) {
 						startNewRound()
-						window.localStorage.setItem('targetDateTime', new Date(new Date().getTime() + (roundTimer * 1000)).getTime().toString())
+						window.sessionStorage.setItem('targetDateTime', new Date(new Date().getTime() + (roundTimer * 1000)).getTime().toString())
 						return 0
 					}
 					return 100 - (secondsRemaining / roundTimer * 100) // progress percentage
@@ -43,6 +43,7 @@ export default function Timer(props: any) {
 			// executed when unmounting
 			return () => {
 				clearInterval(timer);
+				window.sessionStorage.removeItem('targetDateTime')
 			};
 		}
 		// roomCode to initially update props, currentRound to force new round as soon as one user's timer finishes to try avoid desync

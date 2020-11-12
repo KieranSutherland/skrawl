@@ -9,7 +9,7 @@
 	position: relative;
 }
 
-$canvas-header-color: #bebebe;
+$canvas-header-color: #bdbdbd;
 
 .canvasHeader {
 	width: 100%;
@@ -22,6 +22,15 @@ $canvas-header-color: #bebebe;
 	align-items: center; /* vertical */
 }
 
+.canvasHeader form {
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	display: flex;
+	align-items: center; /* vertical */
+	justify-content: center; /* horizontal */
+}
+
 .round {
 	position: absolute;
 	width: max-content;
@@ -29,6 +38,7 @@ $canvas-header-color: #bebebe;
 	margin-left: 2%;
 	font-size: calc(8px + 1.4vw);
 	font-weight: bold;
+	color: #000000;
 }
 
 .submit {
@@ -40,9 +50,7 @@ $canvas-header-color: #bebebe;
 
 .scenario {
 	width: max-content;
-	display: flex;
-	margin: 0 auto;
-	font-size: calc(7px + 1vmin);
+	font-size: calc(5px + 1.25vmin);
 }
 
 .help {
@@ -51,6 +59,7 @@ $canvas-header-color: #bebebe;
 	right:0;
 	margin: 0.5% 0.5% 0 0;
 	font-size: 1.7vh;
+	// filter: invert(1)
 }
 
 .help:hover {

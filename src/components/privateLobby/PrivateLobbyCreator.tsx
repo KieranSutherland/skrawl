@@ -44,7 +44,7 @@ const getCircularReplacer = () => {
 export default function PrivateLobbyCreator() {
 	const firestore = firebase.firestore() // change to use explicit import at some point
 	const history = useHistory()
-	const [sfw, setSfw] = useState<boolean>(true)
+	const [sfw, setSfw] = useState<boolean | undefined>(undefined)
 	const [roomCode, setRoomCode] = useState<string>('????')
 	const [password, setPassword] = useState<string>('????????')
 	const [players, setPlayers] = useState<FirebaseLobbyPlayersField>([])
@@ -68,11 +68,11 @@ export default function PrivateLobbyCreator() {
 		if (!currentLobby) return
 
 		const unsubscribeSnapshotListener = firestore.collection('lobbies').doc(currentLobby!.id).onSnapshot(doc => {
-			setRoomCode(doc!.id)
 			setPassword(doc!.get('password'))
 			setPlayers(doc!.get('players'))
 			setHostUid(doc!.get('host'))
 			setSfw(doc!.get('sfw'))
+			setRoomCode(doc!.id)
 			if (doc!.get('started') as boolean) {
 				unsubscribeSnapshotListener()
 				history.push('/game')
@@ -98,21 +98,34 @@ export default function PrivateLobbyCreator() {
 			alert(`You need less than ${MAX_PLAYERS} players to start a game`)
 			return
 		}
-		assignScenariosToPlayers()
+		const scenariosList = generateScenarioList()
 		await firestore.collection('lobbies').doc(roomCode).update({
 			started: true,
 			maxRound: players.length,
-			players: players
+			scenarios: scenariosList,
+			currentPhase: 'draw'
 		})
 	}
 
-	const assignScenariosToPlayers = () => {
-		const scenariosList = sfw ? scenarios.sfw : scenarios.sfw.concat(scenarios.nsfw)
+	const generateScenarioList = (): FirebaseScenariosField => {
+		const scenariosFiltered = sfw ? scenarios.sfw : scenarios.sfw.concat(scenarios.nsfw)
+		var scenariosList: FirebaseScenariosField = []
 		players.forEach(player => {
-			const randomIndex = Math.floor(Math.random() * Math.floor(scenariosList.length))
-			player.scenarioObj = {originPlayer: currentUser!.uid, scenario: scenariosList[randomIndex], phase: 'draw'}
-			scenariosList.splice(randomIndex)
+			const randomIndex = Math.floor(Math.random() * Math.floor(scenariosFiltered.length))
+			const scenarioAttemptOriginal: ScenarioAttempt = {
+				attempt: scenariosFiltered[randomIndex], 
+				attemptBy: 'Original Scenario',
+				phase: 'guess', 
+			}
+			const scenario = {
+				originalPlayer: player.uid,
+				assignedPlayer: player.uid,
+				scenarioAttempts: [scenarioAttemptOriginal]
+			}
+			scenariosList.push(scenario)
+			scenariosFiltered.splice(randomIndex)
 		})
+		return scenariosList
 	}
 	
 	return (

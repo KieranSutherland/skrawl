@@ -3,6 +3,27 @@ import firebaseAdmin from 'firebase-admin'
 import promisePool from 'es6-promise-pool'
 import { useHistory } from "react-router-dom"
 
+const getCircularReplacer = () => {
+	const seen = new WeakSet()
+	return (key: any, value: any) => {
+		if (typeof value === "object" && value !== null) {
+			if (seen.has(value)) {
+				return
+			}
+			seen.add(value)
+		}
+		return value
+	}
+}
+
+export const stringifyJson = (json: any): string => {
+	return JSON.stringify(json, getCircularReplacer())
+}
+
+export const parseJson = (json: any) => {
+	return JSON.parse(json, getCircularReplacer())
+}
+
 export const deleteEmptyLobbies = async (): Promise<any[]> => {
 	const firestore = firebase.firestore();
 	const lobbies: FirebaseCollectionRefData = firestore.collection('lobbies')

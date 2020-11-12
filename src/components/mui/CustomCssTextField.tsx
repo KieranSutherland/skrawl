@@ -32,21 +32,19 @@ const CustomCssTF = withStyles({
 const CustomCssTextField = (props: any) => {
 
 	return (
-		<div>
-			<CustomCssTF
-				id={props.id}
-				onChange={e => props.setTextMethod(e.target.value)}
-				onKeyPress={e => {if(props.onKeyPress) props.onKeyPress(e)}}
-				value={props.value}
-				required={props.required}
-				label={props.label}
-				variant="outlined"
-				autoComplete="off"
-				autoFocus={props.autoFocus}
-				fullWidth={true}
-				spellCheck={false}
-				InputProps={{ style: { color: "#e6e6e6"} }} />
-		</div>
+		<CustomCssTF
+			id={props.id}
+			onChange={e => props.setTextMethod(e.target.value)}
+			onKeyPress={e => {if(props.onKeyPress) props.onKeyPress(e)}}
+			value={props.value}
+			required={props.required}
+			label={props.label}
+			variant="outlined"
+			autoComplete="off"
+			autoFocus={props.autoFocus}
+			fullWidth={true}
+			spellCheck={false}
+			InputProps={{ style: { color: "#e6e6e6"} }} />
 	)
 }
 

@@ -12,19 +12,19 @@ export default function SendMessage() {
 	const stopAuthListener = firebase.auth().onAuthStateChanged(user => setCurrentUser(user))
 
 	useEffect(() => {
-		setupLobbyListener()
+		setupLobby()
+		return () => { stopAuthListener() }
 	}, [currentUser])
 
-	const setupLobbyListener = async () => {
+	const setupLobby = async () => {
 		if (!currentUser) return
+		// Once current user is defined, unsubscribe from auth listener
+		stopAuthListener()
+
 		const currentLobby = await firebaseHelper.getCurrentLobbyOfUser(currentUser!, null)
 		if (!currentLobby) return
 		
 		setRoomCode(currentLobby.id)
-
-		// Once current user is defined, unsubscribe from auth listener
-		stopAuthListener()
-		// console.log('final currentLobby: ' + JSON.stringify(currentLobby, getCircularReplacer()))
 	}
 
 	const sendMessage = async () => {
@@ -45,7 +45,7 @@ export default function SendMessage() {
 	}
 
 	const handleOnKeyPress = async (e: React.KeyboardEvent<HTMLDivElement>) => {
-		if (e.key === 'Enter') {
+		if (e.key === 'Enter' && message !== '') {
 			await sendMessage()
 			setMessage('')
 		}

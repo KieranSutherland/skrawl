@@ -21,6 +21,7 @@ export default function Game() {
 
 	useEffect(() => {
 		setup()
+		return () => { stopAuthListener() }
 	}, [currentUser])
 
 	const setup = async () => {

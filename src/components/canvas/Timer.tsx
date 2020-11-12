@@ -23,31 +23,31 @@ export default function Timer(props: any) {
 	const history = useHistory()
 	const [progress, setProgress] = useState(0);
 
-	useEffect(() => {
-		if (roundTimer) {
-			if (!window.sessionStorage.getItem('targetDateTime')) {
-				window.sessionStorage.setItem('targetDateTime', new Date(new Date().getTime() + (roundTimer * 1000)).getTime().toString())
-			}
-			const timer = setInterval(() => {
-				setProgress((oldProgress) => {
-					const secondsRemaining = (parseInt(window.sessionStorage.getItem('targetDateTime')!) - new Date().getTime()) / 1000
-					if (secondsRemaining <= 0) {
-						startNewRound()
-						window.sessionStorage.setItem('targetDateTime', new Date(new Date().getTime() + (roundTimer * 1000)).getTime().toString())
-						return 0
-					}
-					return 100 - (secondsRemaining / roundTimer * 100) // progress percentage
-				});
-			}, 300); // delay before next progress update on UI
+	// useEffect(() => {
+	// 	if (roundTimer) {
+	// 		if (!window.sessionStorage.getItem('targetDateTime')) {
+	// 			window.sessionStorage.setItem('targetDateTime', new Date(new Date().getTime() + (roundTimer * 1000)).getTime().toString())
+	// 		}
+	// 		const timer = setInterval(() => {
+	// 			setProgress((oldProgress) => {
+	// 				const secondsRemaining = (parseInt(window.sessionStorage.getItem('targetDateTime')!) - new Date().getTime()) / 1000
+	// 				if (secondsRemaining <= 0) {
+	// 					startNewRound()
+	// 					window.sessionStorage.setItem('targetDateTime', new Date(new Date().getTime() + (roundTimer * 1000)).getTime().toString())
+	// 					return 0
+	// 				}
+	// 				return 100 - (secondsRemaining / roundTimer * 100) // progress percentage
+	// 			});
+	// 		}, 300); // delay before next progress update on UI
 	
-			// executed when unmounting
-			return () => {
-				clearInterval(timer);
-				window.sessionStorage.removeItem('targetDateTime')
-			};
-		}
-		// roomCode to initially update props, currentRound to force new round as soon as one user's timer finishes to try avoid desync
-	}, [props.roomCode, props.currentLobby['currentRound']]); 
+	// 		// executed when unmounting
+	// 		return () => {
+	// 			clearInterval(timer);
+	// 			window.sessionStorage.removeItem('targetDateTime')
+	// 		}
+	// 	}
+	// 	// roomCode to initially update props, currentRound to force new round as soon as one user's timer finishes to try avoid desync
+	// }, [props.roomCode, props.currentLobby['currentRound']]); 
 
 	const startNewRound = async () => {
 		const lobbyRef = await firestore.collection('lobbies').doc(props.roomCode)

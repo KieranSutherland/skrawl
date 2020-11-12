@@ -55,7 +55,6 @@ export default function Home() {
 			history.push(goToPage)
 			return
 		}
-		console.log(`creating new user with nickname: ${nickname}`)
 		const authPromise = auth.signInAnonymously()
 		authPromise.finally(() => {
 			auth.currentUser!.updateProfile({
@@ -72,6 +71,7 @@ export default function Home() {
 			setNickname(nickname)
 		}
 	}
+	
 	return (
 		loading ? <div id="home"><div className="lobbySetup"><Loading /></div></div> :
 			<div id="home">

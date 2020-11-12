@@ -55,7 +55,7 @@ export default function CanvasHeader(props: any) {
 				assignedScenariosFound = assignedScenariosFound + 1
 				const latestScenarioAttempt = scenario.scenarioAttempts[scenario.scenarioAttempts.length - 1]
 				// If it's a drawing submission, check if it's empty, and if it is, don't submit it
-				if ((latestScenarioAttempt.phase === 'guess' || 
+				if (((latestScenarioAttempt.attemptBy !== props.currentUserUid && latestScenarioAttempt.phase === 'guess') || 
 					(latestScenarioAttempt.attemptBy === props.currentUserUid && latestScenarioAttempt.phase === 'draw')) 
 					&& isDrawingEmpty(props.canvasRef?.getSaveData())) {
 					alert('Please draw the scenario before submitting')

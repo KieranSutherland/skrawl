@@ -14,7 +14,6 @@ export default function CanvasHeader(props: any) {
 
 	const handleSubmitClick = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
-		console.log('submit clicked')
 		const lobbyRef = await firestore.collection('lobbies').doc(props.roomCode)
 
 		// save current canvas to scenario object
@@ -51,28 +50,26 @@ export default function CanvasHeader(props: any) {
 
 		scenarios.forEach(scenario => {
 			if (scenario.assignedPlayer === props.currentUserUid) {
-				console.log('found the unique scenario')
 				assignedScenariosFound = assignedScenariosFound + 1
 				const latestScenarioAttempt = scenario.scenarioAttempts[scenario.scenarioAttempts.length - 1]
 				// If it's a drawing submission, check if it's empty, and if it is, don't submit it
 				if (((latestScenarioAttempt.attemptBy !== props.currentUserUid && latestScenarioAttempt.phase === 'guess') || 
 					(latestScenarioAttempt.attemptBy === props.currentUserUid && latestScenarioAttempt.phase === 'draw')) 
-					&& isDrawingEmpty(props.canvasRef?.getSaveData())) {
+					&& isDrawingEmpty(props.canvasRef.current?.getSaveData())) {
 					alert('Please draw the scenario before submitting')
 					validAttempt = false
+					return
 				}
 				// Submit user's round's scenario
 				if (latestScenarioAttempt.attemptBy === props.currentUserUid) { // then user is resubmitting for the same turn
-					console.log('resubmitting')
 					scenario.scenarioAttempts[scenario.scenarioAttempts.length - 1] = {
-						attempt: latestScenarioAttempt.phase === 'draw' ? props.canvasRef.getSaveData() : guessScenario,
+						attempt: latestScenarioAttempt.phase === 'draw' ? getSaveDataWithExactDimensions() : guessScenario,
 						attemptBy: props.currentUserUid,
 						phase: latestScenarioAttempt.phase
 					}
 				} else { // user is submitting for the first time this turn
-					console.log('pushing new')
 					scenario.scenarioAttempts.push({
-						attempt: latestScenarioAttempt.phase === 'draw' ? guessScenario : props.canvasRef.getSaveData(),
+						attempt: latestScenarioAttempt.phase === 'draw' ? guessScenario : getSaveDataWithExactDimensions(),
 						attemptBy: props.currentUserUid,
 						phase: latestScenarioAttempt.phase === 'draw' ? 'guess' : 'draw'
 					})
@@ -99,12 +96,12 @@ export default function CanvasHeader(props: any) {
 
 	const isDrawingEmpty = (saveData: string): boolean => {
 		try {
-			const jsonObj = firebaseHelper.parseJson(saveData)
-			if ((jsonObj['lines'] as []).length < 2) {
-				if ((jsonObj['lines'] as []).length === 0) {
+			const saveDataJson = firebaseHelper.parseJson(saveData)
+			if ((saveDataJson['lines'] as []).length < 2) {
+				if ((saveDataJson['lines'] as []).length === 0) {
 					return true
 				}
-				const potentialLine = (jsonObj['lines'] as []).pop()
+				const potentialLine = (saveDataJson['lines'] as []).pop()
 				if ((potentialLine!['points'] as []).length < 3) {
 					return true
 				}
@@ -114,6 +111,13 @@ export default function CanvasHeader(props: any) {
 			return true
 		}
 		return false
+	}
+
+	const getSaveDataWithExactDimensions = () => {
+		const saveDataJson = firebaseHelper.parseJson(props.canvasRef.current?.getSaveData())
+		saveDataJson['width'] = props.canvasDivRef.current?.offsetWidth
+		saveDataJson['height'] = props.canvasDivRef.current?.offsetHeight
+		return firebaseHelper.stringifyJson(saveDataJson)
 	}
 
 	const startNewRound = async (lobbyRef: FirebaseDocumentRefData, players: FirebaseLobbyPlayersField) => {

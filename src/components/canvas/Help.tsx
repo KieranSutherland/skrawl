@@ -46,13 +46,16 @@ export default function Help() {
 					+ "and see how badly or surprisingly well the original concept stuck throughout."}
 				</DialogContentText>
 				</DialogContent>
-				<DialogTitle id="alert-dialog-title">Buttons</DialogTitle>
+				<DialogTitle id="alert-dialog-title">Canvas Header</DialogTitle>
 				<DialogContent>
+					<DialogContentText>
+						{"ROUNDS: Show the current round out of the total rounds for this game."}
+					</DialogContentText>
 					<DialogContentText>
 						{"SCENARIO: Show the current scenario assigned to you for you to guess/draw."}
 					</DialogContentText>
 					<DialogContentText>
-						{"SUBMIT: Submit your current guess/drawing and end your turn for the round."}
+						{"SUBMIT: Click to submit your current guess/drawing and end your turn for the round."}
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>

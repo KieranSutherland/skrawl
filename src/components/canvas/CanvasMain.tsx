@@ -5,8 +5,8 @@ import CanvasDraw from "react-canvas-draw"
 import Timer from './Timer'
 
 export default function CanvasMain(props: any) {
-	const [canvasData, setCanvasData] = useState<string | null>(null)
-	const [canvasRef, setCanvasRef] = useState<CanvasDraw | null>()
+	const canvasRef = useRef()
+	const canvasDivRef = useRef()
 	const [assignedScenario, setAssignedScenario] = useState<ScenarioAttempt | undefined>()
 
 	useEffect(() => {
@@ -24,9 +24,10 @@ export default function CanvasMain(props: any) {
 				roomCode={props.roomCode} 
 				currentUserUid={props.currentUserUid}
 				assignedScenario={assignedScenario}
+				canvasDivRef={canvasDivRef}
 				canvasRef={canvasRef} />
 			<Timer currentLobby={props.currentLobby} roomCode={props.roomCode} />
-			<Canvas setCanvasRefFunction={setCanvasRef} canvasRef={canvasRef} assignedScenario={assignedScenario} />
+			<Canvas canvasDivRef={canvasDivRef} canvasRef={canvasRef} assignedScenario={assignedScenario} />
 		</div>
 	)
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import CanvasDraw from "react-canvas-draw"
 import drawingCursor from '../../resources/favicon/favicon-32x32.png'
 import eraserCursor from '../../resources/eraser_cursor.png'
@@ -11,8 +11,7 @@ export default function Canvas(props: any) {
 	const smallBrushSize: number = 2.5
 	const largeBrushSize: number = 10
 	const DEFAULT_BRUSH_COLOUR = '#0a0a0a'
-	const [canvas, setCanvas] = useState<CanvasDraw | null>()
-	const [guessCanvas, setGuessCanvas] = useState<CanvasDraw | null>()
+	const canvasGuessRef = useRef<HTMLDivElement | null>(null)
 	const [previousCanvasData, setPreviousCanvasData] = useState<string>()
 	const [brushSize, setBrushSize] = useState<number>(smallBrushSize)
 	const [brushColour, setBrushColour] = useState<string>(DEFAULT_BRUSH_COLOUR)
@@ -30,11 +29,11 @@ export default function Canvas(props: any) {
 
 	if ((props.assignedScenario as ScenarioAttempt)?.phase === 'guess') {
 		return (
-			<div className="canvas">
+			<div ref={props.canvasDivRef} className="canvas">
 				<CanvasDraw 
 					className="canvasDraw"
 					style={{cursor: `${eraserSelected ? eraserCursorStyle : drawingCursorStyle}`}}
-					ref={canvas => props.setCanvasRefFunction(canvas)}
+					ref={props.canvasRef}
 					// loadTimeOffset={5}
 					catenaryColor={"#0a0302"}
 					gridColor={"rgba(150,150,150,0.17)"}
@@ -57,12 +56,12 @@ export default function Canvas(props: any) {
 							src={clearIcon} 
 							alt="Clear" 
 							title="Clear" 
-							onClick={() => props.canvasRef?.clear()} />
+							onClick={() => props.canvasRef.current?.clear()} />
 						<img className="canvasToolsImg" 
 							src={undoIcon} 
 							alt="Undo" 
 							title="Undo" 
-							onClick={() => props.canvasRef?.undo()} />
+							onClick={() => props.canvasRef.current?.undo()} />
 						<img className="canvasToolsImg" 
 							src={eraserIcon} 
 							alt="Eraser" 
@@ -83,13 +82,13 @@ export default function Canvas(props: any) {
 		)
 	} else if ((props.assignedScenario as ScenarioAttempt)?.phase === 'draw') {
 		return (
-			<div className="canvas">
+			<div ref={canvasGuessRef} className="canvas">
 				<CanvasDraw 
 					className="canvasDraw"
 					catenaryColor={"#0a0302"}
 					gridColor={"rgba(150,150,150,0.17)"}
-					canvasWidth="100%"
-					canvasHeight="100%"
+					canvasWidth={canvasGuessRef.current?.offsetWidth}
+					canvasHeight={canvasGuessRef.current?.offsetHeight}
 					disabled={true}
 					saveData={previousCanvasData}
 					immediateLoading={true}

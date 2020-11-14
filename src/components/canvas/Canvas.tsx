@@ -1,13 +1,15 @@
-import React, { useEffect, useRef, useState } from "react"
-import CanvasDraw from "react-canvas-draw"
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import CanvasDraw from 'react-canvas-draw'
 import drawingCursor from '../../resources/favicon/favicon-32x32.png'
 import eraserCursor from '../../resources/eraser_cursor.png'
 import undoIcon from '../../resources/undo.png'
 import clearIcon from '../../resources/clear.png'
 import brushSizeIcon from '../../resources/brush_size.png'
 import eraserIcon from '../../resources/eraser.png'
+import { useHistory } from 'react-router-dom'
 
 export default function Canvas(props: any) {
+	const history = useHistory()
 	const smallBrushSize: number = 2.5
 	const largeBrushSize: number = 10
 	const DEFAULT_BRUSH_COLOUR = '#0a0a0a'
@@ -26,6 +28,17 @@ export default function Canvas(props: any) {
 			setPreviousCanvasData(props.assignedScenario.attempt)
 		}
 	}, [props.assignedScenario])
+
+	// useLayoutEffect(() => {
+	// 	const updateSize = () => {
+	// 		console.log('test: ' + (props.assignedScenario as ScenarioAttempt)?.phase)
+	// 		if ((props.assignedScenario as ScenarioAttempt)?.phase === 'draw') {
+	// 			history.go(0) // no need to refresh if the user is drawing
+	// 		}
+	// 	}
+	// 	window.addEventListener('resize', updateSize)
+	// 	return () => window.removeEventListener('resize', updateSize)
+	// }, [])
 
 	if ((props.assignedScenario as ScenarioAttempt)?.phase === 'guess') {
 		return (

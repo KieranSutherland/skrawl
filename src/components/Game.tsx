@@ -4,7 +4,7 @@ import Players from './players/Players'
 import ChatRoom from './ChatRoom/ChatRoom'
 import Loading from './Loading'
 import GameSummary from './gameSummary/GameSummary'
-import { useHistory } from "react-router-dom"
+import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
 import * as firebaseHelper from '../utils/firebaseHelper'
 

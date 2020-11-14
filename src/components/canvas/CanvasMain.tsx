@@ -11,18 +11,17 @@ export default function CanvasMain(props: any) {
 
 	useEffect(() => {
 		setAssignedScenario(
-			(props.currentLobby['scenarios'] as FirebaseScenariosField)
+			(props.currentLobby['scenarios'] as FirebaseScenariosField[])
 			.find(scenario => scenario.assignedPlayer === props.currentUserUid)
 			?.scenarioAttempts[props.currentLobby['currentRound'] - 1]
 		)
 	}, [props.currentLobby['currentRound']])
 
 	return (
-		<div className="canvasMain">
+		<div style={{height: '100%', width: '100%'}}>
 			<CanvasHeader 
 				currentLobby={props.currentLobby} 
 				roomCode={props.roomCode} 
-				currentUserUid={props.currentUserUid}
 				assignedScenario={assignedScenario}
 				canvasDivRef={canvasDivRef}
 				canvasRef={canvasRef} />

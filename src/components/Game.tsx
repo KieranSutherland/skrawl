@@ -3,6 +3,7 @@ import CanvasMain from './canvas/CanvasMain'
 import Players from './players/Players'
 import ChatRoom from './ChatRoom/ChatRoom'
 import Loading from './Loading'
+import GameSummary from './gameSummary/GameSummary'
 import { useHistory } from "react-router-dom"
 import firebase from 'firebase/app'
 import * as firebaseHelper from '../utils/firebaseHelper'
@@ -59,10 +60,20 @@ export default function Game() {
 			<div className="playersDiv">
 				<Players players={currentLobby['players']} currentUserUid={currentUser ? currentUser.uid : ''} />
 			</div>
-			<CanvasMain 
-				currentUserUid={currentUser ? currentUser.uid : ''}
-				currentLobby={currentLobby}
-				roomCode={roomCode} />
+			<div className="gameMain">
+				{
+				currentLobby['currentRound'] > currentLobby['maxRound'] ? 
+					<GameSummary 
+						currentUserUid={currentUser ? currentUser.uid : ''}
+						currentLobby={currentLobby}
+						roomCode={roomCode} />
+					: 
+					<CanvasMain 
+						currentUserUid={currentUser ? currentUser.uid : ''}
+						currentLobby={currentLobby}
+						roomCode={roomCode} />
+				}
+			</div>
 			<div className="chatRoomDiv">
 				<ChatRoom currentLobby={currentLobby} />
 			</div>

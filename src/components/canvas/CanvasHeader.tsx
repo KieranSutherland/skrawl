@@ -44,33 +44,35 @@ export default function CanvasHeader(props: any) {
 	}
 
 	const updateScenarioAttempt = async (lobbyRef: FirebaseDocumentRefData): Promise<boolean> => {
-		const scenarios = await lobbyRef.get().then(lobby => lobby.get('scenarios') as FirebaseScenariosField)
+		const scenarios = await lobbyRef.get().then(lobby => lobby.get('scenarios') as FirebaseScenariosField[])
 		var assignedScenariosFound = 0
 		var validAttempt = true
 
 		scenarios.forEach(scenario => {
-			if (scenario.assignedPlayer === props.currentUserUid) {
+			if (scenario.assignedPlayer === currentUser.uid) {
 				assignedScenariosFound = assignedScenariosFound + 1
 				const latestScenarioAttempt = scenario.scenarioAttempts[scenario.scenarioAttempts.length - 1]
 				// If it's a drawing submission, check if it's empty, and if it is, don't submit it
-				if (((latestScenarioAttempt.attemptBy !== props.currentUserUid && latestScenarioAttempt.phase === 'guess') || 
-					(latestScenarioAttempt.attemptBy === props.currentUserUid && latestScenarioAttempt.phase === 'draw')) 
+				if (((latestScenarioAttempt.attemptBy !== currentUser.uid && latestScenarioAttempt.phase === 'guess') || 
+					(latestScenarioAttempt.attemptBy === currentUser.uid && latestScenarioAttempt.phase === 'draw')) 
 					&& isDrawingEmpty(props.canvasRef.current?.getSaveData())) {
 					alert('Please draw the scenario before submitting')
 					validAttempt = false
 					return
 				}
 				// Submit user's round's scenario
-				if (latestScenarioAttempt.attemptBy === props.currentUserUid) { // then user is resubmitting for the same turn
+				if (latestScenarioAttempt.attemptBy === currentUser.uid) { // then user is resubmitting for the same turn
 					scenario.scenarioAttempts[scenario.scenarioAttempts.length - 1] = {
 						attempt: latestScenarioAttempt.phase === 'draw' ? getSaveDataWithExactDimensions() : guessScenario,
-						attemptBy: props.currentUserUid,
+						attemptBy: currentUser.uid,
+						attemptByDisplayName: currentUser.displayName!,
 						phase: latestScenarioAttempt.phase
 					}
 				} else { // user is submitting for the first time this turn
 					scenario.scenarioAttempts.push({
 						attempt: latestScenarioAttempt.phase === 'draw' ? guessScenario : getSaveDataWithExactDimensions(),
-						attemptBy: props.currentUserUid,
+						attemptBy: currentUser.uid,
+						attemptByDisplayName: currentUser.displayName!,
 						phase: latestScenarioAttempt.phase === 'draw' ? 'guess' : 'draw'
 					})
 				}
@@ -125,12 +127,21 @@ export default function CanvasHeader(props: any) {
 		players.forEach(player => {
 			player.finishedRound = false
 		})
+
+		const [newRound, maxRound] = await lobbyRef.get().then(lobby => [lobby.get('currentRound') + 1, lobby.get('maxRound')])
+		// if set of rounds are finished, no need to update scenarios
+		if (newRound > maxRound) {
+			console.log('finishing set of rounds...')
+			await lobbyRef.update({
+				currentRound: newRound,
+				players: players
+			})
+			return
+		}
+
 		// re-assign scenarios to next player in the list
-		const scenarios = await lobbyRef.get().then(lobby => lobby.get('scenarios') as FirebaseScenariosField)
+		const scenarios = await lobbyRef.get().then(lobby => lobby.get('scenarios') as FirebaseScenariosField[])
 		scenarios.forEach(scenario => {
-			console.log('looping through scenario...')
-			// console.log('players: ' + players)
-			// console.log('scenario.assignedPlayer: ' + scenario.assignedPlayer)
 			const assignedPlayer = players.find(player => player.uid === scenario.assignedPlayer)
 			if (!assignedPlayer) {
 				console.error("couldn't find player assigned to scenario")
@@ -141,7 +152,6 @@ export default function CanvasHeader(props: any) {
 			scenario.assignedPlayer = players[indexOfPlayer].uid
 		})
 		
-		const newRound = await lobbyRef.get().then(lobby => lobby.get('currentRound')) + 1
 		console.log('starting new round...')
 		await lobbyRef.update({
 			currentRound: newRound,
@@ -161,8 +171,7 @@ export default function CanvasHeader(props: any) {
 					setGuessScenario={setGuessScenario}
 					currentLobby={props.currentLobby} 
 					roomCode={props.roomCode} 
-					assignedScenario={props.assignedScenario}
-					currentUserUid={props.currentUserUid} />
+					assignedScenario={props.assignedScenario} />
 				<div className="submit">
 					<CustomCssButton text="Submit" width="100%" height="4.4vh" fontSize="calc(10px + 0.5vw)" />
 				</div>

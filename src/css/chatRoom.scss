@@ -16,7 +16,7 @@
 	width: 100%;
 	height: 9.5%;
 	margin: 0;
-	margin-left: 4%;
+	margin-left: 5%;
 	font-size: 1.7em;
 	font-weight: bold;
 	display: flex;
@@ -34,8 +34,8 @@
 	display: flex;
 	flex-direction: column-reverse;
 	word-wrap:break-word;
-	border-top: 1px solid #2ba88f62;
-	border-bottom: 1px solid #2ba88f62;
+	border-top: 1px solid $accent-color-faded;
+	border-bottom: 1px solid $accent-color-faded;
 	box-shadow: 0 3.3px 2.2px rgba(0, 0, 0, 0.07) inset,
 		inset 0 -3.3px 2.2px rgba(0, 0, 0, 0.07) ;
 }

@@ -17,7 +17,7 @@ export default function Home() {
 	const history = useHistory()
 	const [nickname, setNickname] = useState<string>(getAuthDisplayName())
 	const [loading, setLoading] = useState<boolean>(false)
-	const MAX_NICKNAME_LENGTH = 16
+	const MAX_NICKNAME_LENGTH = 12
 	var goToPage: string = '/'
 
 	// const stopAuthListener = firebase.auth().onAuthStateChanged(user => user && nickname === '' ? setNickname(getAuthDisplayName()) : stopAuthListener())

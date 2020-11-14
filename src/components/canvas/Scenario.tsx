@@ -73,6 +73,7 @@ export default function Scenario(props: any) {
 					variant="outlined"
 					required
 					autoComplete="off"
+					autoFocus
 					fullWidth
 					spellCheck={false}
 					size="small"

@@ -1,4 +1,5 @@
 $accent-color: #2ba58d;
+$accent-color-faded: #2ba88f62;
 $container-background-color: #444444;
 $container-text-color: #ffffff;
 $testing-color: #000000;
@@ -41,6 +42,7 @@ code {
 @import 'home';
 @import 'privateLobbyCreator';
 @import 'game';
+@import 'gameSummary';
 @import 'footer';
 @import 'backbutton';
 @import 'loading';

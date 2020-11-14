@@ -13,6 +13,7 @@ import scenarios from '../../scenarios.json'
 import { useHistory } from "react-router-dom"
 import firebase from 'firebase/app'
 import * as firebaseHelper from '../../utils/firebaseHelper'
+import * as gameHelper from '../../utils/gameHelper'
 import { accentColor } from '../../constants'
 
 const CustomCssRadio = withStyles({
@@ -51,7 +52,7 @@ export default function PrivateLobbyCreator() {
 	const [hostUid, setHostUid] = useState<string>('')
 	const [currentUser, setCurrentUser] = useState<firebase.User | null>(null)
 	const MIN_PLAYERS: number = 2 // set to 4 for production
-	const MAX_PLAYERS: number = 64
+	const MAX_PLAYERS: number = 8
 
 	const stopAuthListener = firebase.auth().onAuthStateChanged(user => setCurrentUser(user))
 	
@@ -98,34 +99,13 @@ export default function PrivateLobbyCreator() {
 			alert(`You need less than ${MAX_PLAYERS} players to start a game`)
 			return
 		}
-		const scenariosList = generateScenarioList()
+		const scenariosList = gameHelper.generateScenarioList(sfw, players)
 		await firestore.collection('lobbies').doc(roomCode).update({
 			started: true,
 			maxRound: players.length,
 			scenarios: scenariosList,
 			currentPhase: 'draw'
 		})
-	}
-
-	const generateScenarioList = (): FirebaseScenariosField => {
-		const scenariosFiltered = sfw ? scenarios.sfw : scenarios.sfw.concat(scenarios.nsfw)
-		var scenariosList: FirebaseScenariosField = []
-		players.forEach(player => {
-			const randomIndex = Math.floor(Math.random() * Math.floor(scenariosFiltered.length))
-			const scenarioAttemptOriginal: ScenarioAttempt = {
-				attempt: scenariosFiltered[randomIndex], 
-				attemptBy: 'Original Scenario',
-				phase: 'guess', 
-			}
-			const scenario = {
-				originalPlayer: player.uid,
-				assignedPlayer: player.uid,
-				scenarioAttempts: [scenarioAttemptOriginal]
-			}
-			scenariosList.push(scenario)
-			scenariosFiltered.splice(randomIndex)
-		})
-		return scenariosList
 	}
 	
 	return (

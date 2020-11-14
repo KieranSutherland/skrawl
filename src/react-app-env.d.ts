@@ -20,10 +20,11 @@ declare type FirebaseScenariosField = {
 	originalPlayer: string 
 	assignedPlayer: string,
 	scenarioAttempts: ScenarioAttempt[]
-}[]
+}
 declare type ScenarioAttempt = {
 	attempt: any, 
 	attemptBy: string,
+	attemptByDisplayName: string,
 	phase: ScenarioPhase,
 }
 declare type ScenarioPhase = 'draw' | 'guess'

@@ -42,10 +42,12 @@ export default function PrivateLobbyJoin() {
 		}
 		
 		// Add user to players list of lobby
-		const lobbyPlayers: any[] = await (await firestore.collection('lobbies').doc(roomCode).get()).get('players')
+		const lobbyPlayers: FirebaseLobbyPlayerField[] = await (await firestore.collection('lobbies').doc(roomCode).get()).get('players')
 		lobbyPlayers.push({
-			displayName: firebase.auth().currentUser!.displayName,
-			uid: firebase.auth().currentUser!.uid
+			displayName: firebase.auth().currentUser!.displayName!,
+			uid: firebase.auth().currentUser!.uid,
+			finishedRound: false,
+			points: null
 		})
 		await firestore.collection('lobbies').doc(roomCode).update({
 			players: lobbyPlayers

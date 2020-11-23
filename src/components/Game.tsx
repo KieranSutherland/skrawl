@@ -4,6 +4,7 @@ import Players from './players/Players'
 import ChatRoom from './ChatRoom/ChatRoom'
 import Loading from './Loading'
 import GameSummary from './gameSummary/GameSummary'
+import Winner from './winner/Winner'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
 import * as firebaseHelper from '../utils/firebaseHelper'
@@ -40,39 +41,47 @@ export default function Game() {
 
 	const setupSnapshotListener = (lobbyRef: FirebaseDocumentRefData) => {
 		const unsubscribeSnapshotListener = lobbyRef.onSnapshot(doc => {
-			// if player is no longer in the lobby, stop the listener
-			if (!(doc!.get('players') as FirebaseLobbyPlayersField).map(player => player.uid).find(uid => uid === currentUser?.uid)) {
-				unsubscribeSnapshotListener()
-			}
-			if (doc!.get('started') === false) {
-				unsubscribeSnapshotListener()
-				alert('Game hasn\'t started, you shouldn\'t be here!')
-				history.push('/')
-			}
+			firebaseHelper.setupUnsubscriber(doc, currentUser?.uid, history, unsubscribeSnapshotListener)
 			setRoomCode(doc!.id)
 			setCurrentLobby(doc!.data()) // make sure this is set last so the other props are ready
 		})
+	}
+
+	const resolveMainComponent = () => {
+		if (currentLobby!['winners'] && currentLobby!['winners'].length !== 0) {
+			return (
+				<Winner 
+					currentUserUid={currentUser ? currentUser.uid : ''}
+					currentLobby={currentLobby}
+					roomCode={roomCode} />
+			)
+		}
+		else if (currentLobby!['currentRound'] > currentLobby!['maxRound']) {
+			return (
+				<GameSummary 
+					currentUserUid={currentUser ? currentUser.uid : ''}
+					currentLobby={currentLobby}
+					roomCode={roomCode} />
+			)
+		} 
+		else {
+			return (
+				<CanvasMain 
+					currentUserUid={currentUser ? currentUser.uid : ''}
+					currentLobby={currentLobby}
+					roomCode={roomCode} />
+			)
+		}
 	}
 
 	return (
 		!currentLobby ? <main className="lobbySetup"><Loading /></main> :
 		<main className="game">
 			<div className="playersDiv">
-				<Players players={currentLobby['players']} currentUserUid={currentUser ? currentUser.uid : ''} />
+				<Players hostUid={currentLobby['host']} players={currentLobby['players']} currentUserUid={currentUser ? currentUser.uid : ''} />
 			</div>
 			<div className="gameMain">
-				{
-				currentLobby['currentRound'] > currentLobby['maxRound'] ? 
-					<GameSummary 
-						currentUserUid={currentUser ? currentUser.uid : ''}
-						currentLobby={currentLobby}
-						roomCode={roomCode} />
-					: 
-					<CanvasMain 
-						currentUserUid={currentUser ? currentUser.uid : ''}
-						currentLobby={currentLobby}
-						roomCode={roomCode} />
-				}
+				{resolveMainComponent()}
 			</div>
 			<div className="chatRoomDiv">
 				<ChatRoom currentLobby={currentLobby} />

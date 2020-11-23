@@ -152,3 +152,15 @@ export const fullClean = async () => {
 	// get inactive users and remove them from lobbies
 	await deleteEmptyLobbies()
 }
+
+export const setupUnsubscriber = (doc: FirebaseDocumentSnapshotData, currentUserUid: string | undefined, history: any, unsubscriberFunction: any) => {
+	// if player is no longer in the lobby, stop the listener
+	if (!(doc!.get('players') as FirebaseLobbyPlayersField).map(player => player.uid).find(uid => uid === currentUserUid)) {
+		unsubscriberFunction()
+	}
+	if (doc!.get('started') === false) {
+		unsubscriberFunction()
+		alert('Game hasn\'t started, you shouldn\'t be here!')
+		history.push('/')
+	}
+}

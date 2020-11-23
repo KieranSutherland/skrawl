@@ -40,14 +40,17 @@ export default function PrivateLobbyCreate() {
 
 	const joinNewLobby = async (lobbies: FirebaseCollectionRefData) => {
 		const roomCode: number = await findUnusedRoomCode(lobbies)
+		const newPlayer: FirebaseLobbyPlayerField = {
+			uid: firebase.auth().currentUser?.uid!,
+			displayName: firebase.auth().currentUser?.displayName!,
+			finishedRound: false,
+			points: null
+		}
 		firestore.collection('lobbies').doc(roomCode.toString()).set({
 			host: firebase.auth().currentUser?.uid,
 			password: password,
 			started: false,
-			players: [{
-				uid: firebase.auth().currentUser?.uid,
-				displayName: firebase.auth().currentUser?.displayName
-			}],
+			players: [newPlayer],
 			messages: [],
 			currentRound: 1,
 			sfw: true,

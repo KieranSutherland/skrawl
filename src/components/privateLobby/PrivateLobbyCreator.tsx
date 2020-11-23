@@ -99,12 +99,13 @@ export default function PrivateLobbyCreator() {
 			alert(`You need less than ${MAX_PLAYERS} players to start a game`)
 			return
 		}
+		players.forEach(player => player['points'] = 0)
 		const scenariosList = gameHelper.generateScenarioList(sfw, players)
 		await firestore.collection('lobbies').doc(roomCode).update({
+			players: players,
 			started: true,
 			maxRound: players.length,
-			scenarios: scenariosList,
-			currentPhase: 'draw'
+			scenarios: scenariosList
 		})
 	}
 	
@@ -113,7 +114,6 @@ export default function PrivateLobbyCreator() {
 		<div className="lobbySetup">
 			<BackButton cleanLobbies={true} />
 			<div className="privateLobbyPlayerList">
-				{/* Players: (11/64) */}
 				<Players players={players} currentUserUid={currentUser ? currentUser.uid : ''} hostUid={hostUid} />
 			</div>
 			<div className="privateLobbySettings">

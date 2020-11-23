@@ -45,6 +45,9 @@ export default function Help() {
 					+ "of the game has ended. You can then see a playback of each person's drawing's journey through the players "
 					+ "and see how badly or surprisingly well the original concept stuck throughout."}
 				</DialogContentText>
+				<DialogContentText>
+					{"First person to get two more points than the number of people playing, wins the game!"}
+				</DialogContentText>
 				</DialogContent>
 				<DialogTitle id="alert-dialog-title">Canvas Header</DialogTitle>
 				<DialogContent>

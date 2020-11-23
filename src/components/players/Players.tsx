@@ -6,11 +6,13 @@ export default function Players(props: any) {
 		<div className="players">
 			{props.players && (props.players as FirebaseLobbyPlayersField).map((player, index) => {
 				return (
-					<div key={index} style={{fontWeight: props.currentUserUid === player.uid ? 'bold' : undefined}}>
+					<div key={index}>
 						<Player 
+							isCurrentUser={props.currentUserUid === player.uid}
 							displayName={player.displayName} 
 							displayHostIcon={props.hostUid === player.uid}
-							finishedRound={player.finishedRound} />
+							finishedRound={player.finishedRound}
+							points={player.points} />
 					</div>
 				)
 			})}

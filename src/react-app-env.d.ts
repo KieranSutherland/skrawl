@@ -5,6 +5,7 @@ declare module 'node-schedule';
 
 declare type FirebaseCollectionRefData = firebase.firestore.CollectionReference<firebase.firestore.DocumentData>
 declare type FirebaseDocumentRefData = firebase.firestore.DocumentReference<firebase.firestore.DocumentData>
+declare type FirebaseDocumentSnapshotData = firebase.firestore.DocumentSnapshot<firebase.firestore.DocumentData>
 declare type FirebaseQueryDocumentSnapshot = firebase.firestore.QueryDocumentSnapshot<firebase.firestore.DocumentData>
 declare type FirebaseLobbyPlayersField = FirebaseLobbyPlayerField[]
 declare type FirebaseLobbyMessagesField = { 
@@ -14,7 +15,8 @@ declare type FirebaseLobbyMessagesField = {
 declare type FirebaseLobbyPlayerField = { 
 	uid: string, 
 	displayName: string, 
-	finishedRound: boolean
+	finishedRound: boolean,
+	points: number | null
 }
 declare type FirebaseScenariosField = {
 	originalPlayer: string 

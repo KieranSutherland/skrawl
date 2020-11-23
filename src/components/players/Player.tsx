@@ -6,8 +6,13 @@ export default function Player(props: any) {
 	return (
 		<div className="player">
 			{props.displayHostIcon && <img className="hostImg" src={crown} alt="(Host)" />}
-			{props.displayName}
-			{props.finishedRound && <img className="finishedImg" src={finished} alt="(Finished)" />}
+			<div style={{fontWeight: props.isCurrentUser ? 'bold' : undefined}}>
+				{props.displayName}
+			</div>
+			<div className="playerRoundDetails">
+				{props.finishedRound && <img className="finishedImg" src={finished} alt="(Finished)" />}
+				{props.points}
+			</div>
 		</div>
 	)
 }

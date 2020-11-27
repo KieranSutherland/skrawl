@@ -21,3 +21,7 @@ export const generateScenarioList = (sfw: boolean | undefined, players: Firebase
 	})
 	return scenariosList
 }
+
+export const sleep = async (msec: number): Promise<any> => {
+	return new Promise(resolve => setTimeout(resolve, msec))
+}

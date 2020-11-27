@@ -6,7 +6,14 @@ import undoIcon from '../../resources/undo.png'
 import clearIcon from '../../resources/clear.png'
 import brushSizeIcon from '../../resources/brush_size.png'
 import eraserIcon from '../../resources/eraser.png'
+import paletteIcon from '../../resources/palette.png'
+import ChromePicker from 'react-color'
 import { useHistory } from 'react-router-dom'
+
+interface brushProps {
+	size: number,
+	color: string
+}
 
 export default function Canvas(props: any) {
 	const history = useHistory()
@@ -18,6 +25,8 @@ export default function Canvas(props: any) {
 	const [brushSize, setBrushSize] = useState<number>(smallBrushSize)
 	const [brushColour, setBrushColour] = useState<string>(DEFAULT_BRUSH_COLOUR)
 	const [eraserSelected, setEraserSelected] = useState<boolean>(false)
+	const [showColorPicker, setShowColorPicker] = useState<boolean>(false)
+	const [brushBeforeEraser, setBrushBeforeEraser] = useState<brushProps | null>(null)
 	const drawingCursorStyle = `url(${drawingCursor}) 1 32, auto`
 	const eraserCursorStyle = `url(${eraserCursor}) 16 16, auto`
 
@@ -40,6 +49,30 @@ export default function Canvas(props: any) {
 	// 	return () => window.removeEventListener('resize', updateSize)
 	// }, [])
 
+	const handleEraserClick = () => {
+		if (eraserSelected && brushBeforeEraser) {
+			setEraserSelected(false)
+			setBrushColour(brushBeforeEraser.color)
+			setBrushSize(brushBeforeEraser.size)
+		} else {
+			setEraserSelected(true)
+			setBrushBeforeEraser({size: brushSize, color: brushColour})
+			setBrushSize(16)
+			setBrushColour('#ffffff')
+		}
+	}
+
+	const handleBrushSizeClick = (brushSize: number) => {
+		setEraserSelected(false)
+		setBrushSize(brushSize)
+		if (brushBeforeEraser) {
+			setBrushColour(brushBeforeEraser.color)
+			setBrushBeforeEraser(null)
+		} else {
+			setBrushColour(brushColour)
+		}
+	}
+
 	if ((props.assignedScenario as ScenarioAttempt)?.phase === 'guess') {
 		return (
 			<div ref={props.canvasDivRef} className="canvas">
@@ -47,6 +80,7 @@ export default function Canvas(props: any) {
 					className="canvasDraw"
 					style={{cursor: `${eraserSelected ? eraserCursorStyle : drawingCursorStyle}`}}
 					ref={props.canvasRef}
+					onChange={(canvas: CanvasDraw) => setShowColorPicker(false)}
 					// loadTimeOffset={5}
 					catenaryColor={"#0a0302"}
 					gridColor={"rgba(150,150,150,0.17)"}
@@ -79,17 +113,37 @@ export default function Canvas(props: any) {
 							src={eraserIcon} 
 							alt="Eraser" 
 							title="Eraser" 
-							onClick={() => {setEraserSelected(true); setBrushSize(16); setBrushColour('#ffffff')}} />
+							onClick={() => handleEraserClick()} />
+						<img className="canvasToolsImg" 
+							src={paletteIcon} 
+							alt="Color Palette" 
+							title="Color Palette" 
+							onClick={() => {setShowColorPicker(!showColorPicker)}} />
 						<img className="canvasToolsImg smallBrush" 
 							src={brushSizeIcon} 
 							alt="Small brush" 
 							title="Small brush" 
-							onClick={() => {setEraserSelected(false); setBrushSize(smallBrushSize); setBrushColour(DEFAULT_BRUSH_COLOUR)}} />
+							onClick={() => handleBrushSizeClick(smallBrushSize)} />
 						<img className="canvasToolsImg" 
 							src={brushSizeIcon} 
 							alt="Large brush" 
 							title="Large brush" 
-							onClick={() => {setEraserSelected(false); setBrushSize(largeBrushSize); setBrushColour(DEFAULT_BRUSH_COLOUR)}} />
+							onClick={() => handleBrushSizeClick(largeBrushSize)} />
+				</div>
+				<div style={{position: 'absolute', top: 0, right: 0, zIndex: 60}}>
+					{
+						showColorPicker && (
+							<ChromePicker 
+								color={brushColour} 
+								onChange={(c: any) => {
+									// if color picked but still on eraser, auto swap back to brush
+									if (eraserSelected) {
+										handleBrushSizeClick(smallBrushSize)
+									}
+									setBrushColour(c.hex)
+								}}/>
+						)
+					}
 				</div>
 			</div>
 		)

@@ -5,6 +5,7 @@ import CustomCssButton from '../mui/CustomCssButton'
 import firebase from 'firebase/app'
 import { useHistory } from "react-router-dom"
 import * as firebaseHelper from '../../utils/firebaseHelper'
+import * as gameHelper from '../../utils/gameHelper'
 
 export default function CanvasHeader(props: any) {
 	const firestore = firebase.firestore()
@@ -15,6 +16,7 @@ export default function CanvasHeader(props: any) {
 	const handleSubmitClick = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault()
 		const lobbyRef = await firestore.collection('lobbies').doc(props.roomCode)
+		const players: FirebaseLobbyPlayersField = await lobbyRef.get().then(lobby => lobby.get('players'))
 
 		// save current canvas to scenario object
 		const validAttempt = await updateScenarioAttempt(lobbyRef)
@@ -24,8 +26,6 @@ export default function CanvasHeader(props: any) {
 		}
 
 		// update player to finish round
-		const players: FirebaseLobbyPlayersField = await lobbyRef.get().then(lobby => lobby.get('players'))
-
 		players.forEach(player => {
 			if (player.uid === currentUser.uid) {
 				player.finishedRound = true
@@ -45,6 +45,7 @@ export default function CanvasHeader(props: any) {
 
 	const updateScenarioAttempt = async (lobbyRef: FirebaseDocumentRefData): Promise<boolean> => {
 		const scenarios = await lobbyRef.get().then(lobby => lobby.get('scenarios') as FirebaseScenariosField[])
+		// await gameHelper.sleep(3000) used to replicate slow networks
 		var assignedScenariosFound = 0
 		var validAttempt = true
 
@@ -123,6 +124,28 @@ export default function CanvasHeader(props: any) {
 	}
 
 	const startNewRound = async (lobbyRef: FirebaseDocumentRefData, players: FirebaseLobbyPlayersField) => {
+		const [scenarios, currentRound] = await lobbyRef.get().then(lobby => [lobby.get('scenarios'), lobby.get('currentRound')])
+
+		// check all scenarios have been saved correctly
+		const missingScenarios = scenarios.filter((scenario: FirebaseScenariosField) => scenario.scenarioAttempts.length - 1 !== currentRound)
+		console.log(missingScenarios)
+		if (missingScenarios.length !== 0) {
+			console.log('missing scenarios')
+			// untick finished boolean for the players and don't start new round
+			missingScenarios.forEach((scenario: FirebaseScenariosField) => {
+				const player = players.find(player => player.uid === scenario.assignedPlayer)
+				if (player) {
+					console.log('missing a scenario: ' + player.displayName)
+					player.finishedRound = false
+				}
+			})
+			await lobbyRef.update({
+				players: players
+			})
+			alert('Because of database locking issues, someone will have to submit their scenario again. Trying to fix this currently but this is temporary fix, soz')
+			return
+		}
+
 		// set all players back to unfinished
 		players.forEach(player => {
 			player.finishedRound = false
@@ -140,8 +163,7 @@ export default function CanvasHeader(props: any) {
 		}
 
 		// re-assign scenarios to next player in the list
-		const scenarios = await lobbyRef.get().then(lobby => lobby.get('scenarios') as FirebaseScenariosField[])
-		scenarios.forEach(scenario => {
+		scenarios.forEach((scenario: FirebaseScenariosField) => {
 			const assignedPlayer = players.find(player => player.uid === scenario.assignedPlayer)
 			if (!assignedPlayer) {
 				console.error("couldn't find player assigned to scenario")

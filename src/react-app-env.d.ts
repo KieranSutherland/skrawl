@@ -2,6 +2,7 @@
 declare module 'react-router-dom';
 declare module 'express';
 declare module 'node-schedule';
+declare module 'react-color';
 
 declare type FirebaseCollectionRefData = firebase.firestore.CollectionReference<firebase.firestore.DocumentData>
 declare type FirebaseDocumentRefData = firebase.firestore.DocumentReference<firebase.firestore.DocumentData>

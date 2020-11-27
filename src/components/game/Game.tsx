@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import CanvasMain from './canvas/CanvasMain'
-import Players from './players/Players'
-import ChatRoom from './ChatRoom/ChatRoom'
-import Loading from './Loading'
-import GameSummary from './gameSummary/GameSummary'
-import Winner from './winner/Winner'
+import GameMain from './GameMain'
+import Players from '../players/Players'
+import ChatRoom from '../ChatRoom/ChatRoom'
+import Loading from '../Loading'
 import { useHistory } from 'react-router-dom'
 import firebase from 'firebase/app'
-import * as firebaseHelper from '../utils/firebaseHelper'
+import * as firebaseHelper from '../../utils/firebaseHelper'
 
 export default function Game() {
 	const firestore = firebase.firestore()
@@ -36,7 +34,6 @@ export default function Game() {
 
 		const lobbyRef = firestore.collection('lobbies').doc(currentLobby!.id)
 		setupSnapshotListener(lobbyRef)
-		// console.log('final currentLobby: ' + JSON.stringify(currentLobby, getCircularReplacer()))
 	}
 
 	const setupSnapshotListener = (lobbyRef: FirebaseDocumentRefData) => {
@@ -47,33 +44,6 @@ export default function Game() {
 		})
 	}
 
-	const resolveMainComponent = () => {
-		if (currentLobby!['winners'] && currentLobby!['winners'].length !== 0) {
-			return (
-				<Winner 
-					currentUserUid={currentUser ? currentUser.uid : ''}
-					currentLobby={currentLobby}
-					roomCode={roomCode} />
-			)
-		}
-		else if (currentLobby!['currentRound'] > currentLobby!['maxRound']) {
-			return (
-				<GameSummary 
-					currentUserUid={currentUser ? currentUser.uid : ''}
-					currentLobby={currentLobby}
-					roomCode={roomCode} />
-			)
-		} 
-		else {
-			return (
-				<CanvasMain 
-					currentUserUid={currentUser ? currentUser.uid : ''}
-					currentLobby={currentLobby}
-					roomCode={roomCode} />
-			)
-		}
-	}
-
 	return (
 		!currentLobby ? <main className="lobbySetup"><Loading /></main> :
 		<main className="game">
@@ -81,7 +51,10 @@ export default function Game() {
 				<Players hostUid={currentLobby['host']} players={currentLobby['players']} currentUserUid={currentUser ? currentUser.uid : ''} />
 			</div>
 			<div className="gameMain">
-				{resolveMainComponent()}
+				<GameMain 
+					currentUserUid={currentUser ? currentUser.uid : ''}
+					currentLobby={currentLobby}
+					roomCode={roomCode}/>
 			</div>
 			<div className="chatRoomDiv">
 				<ChatRoom currentLobby={currentLobby} />

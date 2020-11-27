@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export default function GameSummaryTile(props: any) {
-	const classes = useStyles();
+	const classes = useStyles()
 	const paperRef = useRef<HTMLDivElement | null>(null)
 	const [paperSize, setPaperSize] = useState<number>(200)
 	const isGuess = props.attempt.phase === 'guess'

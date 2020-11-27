@@ -33,18 +33,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function GameSummaryTile(props: any) {
 	const classes = useStyles()
-	const paperRef = useRef<HTMLDivElement | null>(null)
+	const paperInnerRef = useRef<HTMLDivElement | null>(null)
 	const [paperSize, setPaperSize] = useState<number>(200)
 	const isGuess = props.attempt.phase === 'guess'
 
 	useEffect(() => {
-		if (paperRef.current?.offsetWidth && paperRef.current?.offsetWidth !== paperSize) {
-			setPaperSize(paperRef.current?.offsetWidth)
+		if (paperInnerRef.current?.offsetWidth && paperInnerRef.current?.offsetWidth !== paperSize) {
+			setPaperSize(paperInnerRef.current?.offsetWidth)
 		}
-	}, [paperRef])
+	}, [paperInnerRef])
 
 	return (
-		<Grid key={props.attemptNo} item xs={3}>
+		<Grid className="gameSummaryTile" key={props.attemptNo} item xs={3}>
 			<div>
 				<Paper 
 					className={props.isVotingUser && props.attemptNo !== 1 ? classes.paperVoting : classes.paperDefault} 
@@ -53,7 +53,7 @@ export default function GameSummaryTile(props: any) {
 					<div className="tileRoundCount">
 						{props.attemptNo}
 					</div>
-					<div ref={paperRef} style={{ height: paperSize, display: "flex", alignItems: 'center', justifyContent: "center" }}>
+					<div ref={paperInnerRef} style={{ height: paperSize, display: "flex", alignItems: 'center', justifyContent: "center" }}>
 						{
 							isGuess ?
 								props.attempt.attempt

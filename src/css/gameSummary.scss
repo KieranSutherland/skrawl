@@ -52,7 +52,7 @@
 }
 
 .gameSummaryInner {
-	width: 90%;
+	width: 80%; // change to be dynamic depending on if the summary is showing 4 or less
 	margin: 0 5%;
 	flex-grow: 1;
 	overflow-wrap: break-word;

@@ -1,10 +1,11 @@
-import React, { useRef, useEffect, useState } from "react"
+import React, { useRef, useEffect, useState, useLayoutEffect } from "react"
 import Canvas from './Canvas'
 import CanvasHeader from './CanvasHeader'
-import CanvasDraw from "react-canvas-draw"
 import Timer from './Timer'
+import { useHistory } from 'react-router-dom'
 
 export default function CanvasMain(props: any) {
+	const history = useHistory()
 	const canvasRef = useRef()
 	const canvasDivRef = useRef()
 	const [assignedScenario, setAssignedScenario] = useState<ScenarioAttempt | undefined>()
@@ -16,6 +17,16 @@ export default function CanvasMain(props: any) {
 			?.scenarioAttempts[props.currentLobby['currentRound'] - 1]
 		)
 	}, [props.currentLobby['currentRound']])
+
+	useLayoutEffect(() => {
+		const updateSize = () => {
+			if (assignedScenario?.phase === 'draw') {
+				history.go(0) // refresh page
+			}
+		}
+		window.addEventListener('resize', updateSize)
+		return () => window.removeEventListener('resize', updateSize)
+	}, [assignedScenario])
 
 	return (
 		<div style={{height: '100%', width: '100%'}}>

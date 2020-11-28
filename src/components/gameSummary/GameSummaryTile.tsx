@@ -41,6 +41,7 @@ export default function GameSummaryTile(props: any) {
 	const [showFullScreenIcon, setShowFullScreenIcon] = useState<boolean>(false)
 	const [showFullScreenCanvas, setShowFullScreenCanvas] = useState<boolean>(false)
 	const isGuess = props.attempt.phase === 'guess'
+	const selectorBoxShadowDim = 4
 
 	useEffect(() => {
 		if (paperInnerRef.current?.offsetWidth && paperInnerRef.current?.offsetWidth !== paperSize) {
@@ -50,13 +51,15 @@ export default function GameSummaryTile(props: any) {
 
 	return (
 		<Grid className="gameSummaryTile" key={props.attemptNo} item xs={3}>
-			<div onMouseOver={e => setShowFullScreenIcon(!isGuess)} onMouseLeave={e => setShowFullScreenIcon(false)}>
+			<div>
 				<div className="gameSummaryInnerAttemptTitle">
 					<h3 style={{margin: '0 0 3px 0', color: '#999999'}}>{isGuess ? 'Guess' : 'Drawing'}</h3>
 				</div>
 				<Paper 
 					className={props.isVotingUser && props.attemptNo !== 1 ? classes.paperVoting : classes.paperDefault} 
-					style={props.selectedWinnerIndex === props.attemptNo ? {borderRadius: '9px', boxShadow: `inset 0px 0px 0px 4px ${accentColor}`} : {}}
+					onMouseOver={() => setShowFullScreenIcon(!isGuess)} 
+					onMouseOut={() => setShowFullScreenIcon(false)}
+					style={props.selectedWinnerIndex === props.attemptNo ? {borderRadius: '9px', boxShadow: `inset 0px 0px 0px ${selectorBoxShadowDim}px ${accentColor}`} : {}}
 					onClick={e => props.isVotingUser && props.attemptNo !== 1 ? props.handleTileClickFunction(e, props.attemptNo) : null}>
 					<div className="tileRoundCount">
 						{props.attemptNo}
@@ -70,7 +73,7 @@ export default function GameSummaryTile(props: any) {
 								props.attempt.attempt
 							:
 								<GameSummaryTileCanvas 
-									size={paperSize - 8}
+									size={paperSize - (selectorBoxShadowDim * 2)}
 									drawing={props.attempt.attempt} />
 						}
 					</div>

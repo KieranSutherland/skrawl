@@ -128,9 +128,8 @@ export default function CanvasHeader(props: any) {
 
 		// check all scenarios have been saved correctly
 		const missingScenarios = scenarios.filter((scenario: FirebaseScenariosField) => scenario.scenarioAttempts.length - 1 !== currentRound)
-		console.log(missingScenarios)
 		if (missingScenarios.length !== 0) {
-			console.log('missing scenarios')
+			console.log('missing scenarios: ' + missingScenarios)
 			// untick finished boolean for the players and don't start new round
 			missingScenarios.forEach((scenario: FirebaseScenariosField) => {
 				const player = players.find(player => player.uid === scenario.assignedPlayer)

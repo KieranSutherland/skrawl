@@ -3,7 +3,7 @@ import ClipLoader from "react-spinners/ClipLoader"
 import { Link } from "react-router-dom"
 import { accentColor } from '../constants'
 
-export default function Loading() {
+export default function Loading(props: any) {
 	const [showStuckText, setShowStuckText] = useState<boolean>(false)
 
 	useEffect(() => {
@@ -16,11 +16,11 @@ export default function Loading() {
 	}, [])
 
 	return (
-		<div className="loading">
+		<div className="loading" style={{width: props.size??'15vmin', height: props.size??'15vmin'}}>
 			<ClipLoader
 				size={'100%'}
 				color={accentColor} />
-			<div className="loadingStuck" hidden={!showStuckText}>
+			<div className="loadingStuck" hidden={!showStuckText || props.hideStuckText}>
 				<Link to="/" style={{ textDecoration: 'none', color: 'white' }}>
 					Stuck? Click here
 				</Link>

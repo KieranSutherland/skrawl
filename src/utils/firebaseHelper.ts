@@ -76,6 +76,18 @@ export const removeUserFromAllLobbies = async (user: firebase.User): Promise<any
 	return Promise.all(lobbyRemovalPromises)
 }
 
+export const updatePlayerFinishedRoundValue = async (currentPlayersList: FirebaseLobbyPlayersField, playerUid: string, roomCode: string, newValue: boolean) => {
+	const firestore = firebase.firestore();
+	currentPlayersList.forEach(player => {
+		if (player.uid === playerUid) {
+			player.finishedRound = newValue
+		}
+	})
+	await firestore.collection('lobbies').doc(roomCode).update({
+		players: currentPlayersList
+	})
+}
+
 export const getPlayerFieldOfUser = async (userUid: string, roomCode: string): Promise<FirebaseLobbyPlayerField | undefined> => {
 	const firestore = firebase.firestore();
 	return firestore.collection('lobbies').doc(roomCode).get().then(lobby => {

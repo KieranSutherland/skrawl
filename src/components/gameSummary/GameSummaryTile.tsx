@@ -1,10 +1,9 @@
 import React, { useRef, useEffect, useState } from "react"
-import CanvasDraw from "react-canvas-draw"
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 import Dialog from '@material-ui/core/Dialog'
-import fullScreenIcon from '../../resources/full_screen.png'
+import fullScreenIcon from '../../resources/full_screen.svg'
 import GameSummaryTileCanvas from './GameSummaryTileCanvas'
 import { accentColor } from '../../constants'
 

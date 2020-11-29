@@ -1,13 +1,13 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import CanvasDraw from 'react-canvas-draw'
 import drawingCursor from '../../resources/favicon/favicon-32x32.png'
 import eraserCursor from '../../resources/eraser_cursor.png'
-import undoIcon from '../../resources/undo.png'
-import clearIcon from '../../resources/clear.png'
-import brushSizeIcon from '../../resources/brush_size.png'
-import eraserIcon from '../../resources/eraser.png'
-import paletteIcon from '../../resources/palette.png'
-import ChromePicker from 'react-color'
+import undoIcon from '../../resources/undo.svg'
+import clearIcon from '../../resources/clear.svg'
+import eraserIcon from '../../resources/eraser.svg'
+import paletteIcon from '../../resources/palette.svg'
+import { CompactPicker } from 'react-color'
+import * as firebaseHelper from '../../utils/firebaseHelper'
 import { useHistory } from 'react-router-dom'
 
 interface brushProps {
@@ -38,17 +38,6 @@ export default function Canvas(props: any) {
 		}
 	}, [props.assignedScenario])
 
-	// useLayoutEffect(() => {
-	// 	const updateSize = () => {
-	// 		console.log('test: ' + (props.assignedScenario as ScenarioAttempt)?.phase)
-	// 		if ((props.assignedScenario as ScenarioAttempt)?.phase === 'draw') {
-	// 			history.go(0) // no need to refresh if the user is drawing
-	// 		}
-	// 	}
-	// 	window.addEventListener('resize', updateSize)
-	// 	return () => window.removeEventListener('resize', updateSize)
-	// }, [])
-
 	const handleEraserClick = () => {
 		if (eraserSelected && brushBeforeEraser) {
 			setEraserSelected(false)
@@ -56,7 +45,7 @@ export default function Canvas(props: any) {
 			setBrushSize(brushBeforeEraser.size)
 		} else {
 			setEraserSelected(true)
-			setBrushBeforeEraser({size: brushSize, color: brushColour})
+			setBrushBeforeEraser({ size: brushSize, color: brushColour })
 			setBrushSize(16)
 			setBrushColour('#ffffff')
 		}
@@ -73,14 +62,22 @@ export default function Canvas(props: any) {
 		}
 	}
 
+	const handleCanvasChange = (canvas: CanvasDraw) => {
+		setShowColorPicker(false)
+		// if user has already submitted for the round, unsubmit so they can submit again
+		if (props.currentPlayer.finishedRound) {
+			firebaseHelper.updatePlayerFinishedRoundValue(props.currentLobby['players'] as FirebaseLobbyPlayersField, props.currentPlayer?.uid, props.roomCode, false)
+		}
+	}
+
 	if ((props.assignedScenario as ScenarioAttempt)?.phase === 'guess') {
 		return (
 			<div ref={props.canvasDivRef} className="canvas">
-				<CanvasDraw 
+				<CanvasDraw
 					className="canvasDraw"
-					style={{cursor: `${eraserSelected ? eraserCursorStyle : drawingCursorStyle}`}}
+					style={{ cursor: `${eraserSelected ? eraserCursorStyle : drawingCursorStyle}` }}
 					ref={props.canvasRef}
-					onChange={(canvas: CanvasDraw) => setShowColorPicker(false)}
+					onChange={(canvas: CanvasDraw) => handleCanvasChange(canvas)}
 					// loadTimeOffset={5}
 					catenaryColor={"#0a0302"}
 					gridColor={"rgba(150,150,150,0.17)"}
@@ -92,56 +89,61 @@ export default function Canvas(props: any) {
 					disabled={false}
 					imgSrc={""}
 					saveData={previousCanvasData}
-					// saveData={`{\"lines\":[{\"points\":[],\"brushColor\":\"${DEFAULT_BRUSH_COLOUR}\",\"brushRadius\":
-					// 	${smallBrushSize}}],\"width\":\"100%\",\"height\":\"100%\"}`} // bug with CanvasDraw component so have to set this manually
 					immediateLoading={true}
 					hideGrid={true}
 					hideInterface={true}
 				/>
 				<div className="canvasTools">
-						<img className="canvasToolsImg" 
-							src={clearIcon} 
-							alt="Clear" 
-							title="Clear" 
-							onClick={() => props.canvasRef.current?.clear()} />
-						<img className="canvasToolsImg" 
-							src={undoIcon} 
-							alt="Undo" 
-							title="Undo" 
-							onClick={() => props.canvasRef.current?.undo()} />
-						<img className="canvasToolsImg" 
-							src={eraserIcon} 
-							alt="Eraser" 
-							title="Eraser" 
-							onClick={() => handleEraserClick()} />
-						<img className="canvasToolsImg" 
-							src={paletteIcon} 
-							alt="Color Palette" 
-							title="Color Palette" 
-							onClick={() => {setShowColorPicker(!showColorPicker)}} />
-						<img className="canvasToolsImg smallBrush" 
-							src={brushSizeIcon} 
-							alt="Small brush" 
-							title="Small brush" 
+					<img className="canvasTool canvasToolsImg"
+						src={clearIcon}
+						alt="Clear"
+						title="Clear"
+						onClick={() => props.canvasRef.current?.clear()} />
+					<img className="canvasTool canvasToolsImg"
+						src={undoIcon}
+						alt="Undo"
+						title="Undo"
+						onClick={() => props.canvasRef.current?.undo()} />
+					<img className="canvasTool canvasToolsImg"
+						src={eraserIcon}
+						alt="Eraser"
+						title="Eraser"
+						onClick={() => handleEraserClick()} />
+					<img className="canvasTool canvasToolsImg"
+						src={paletteIcon}
+						alt="Color picker"
+						title="Color picker"
+						onClick={() => { setShowColorPicker(!showColorPicker) }} />
+					<svg className="canvasTool" height="18" width="18">
+						<circle
+							cx="9" cy="9" r="8"
+							stroke="black"
+							strokeWidth="2"
+							fill={eraserSelected ? brushBeforeEraser?.color : brushColour}
 							onClick={() => handleBrushSizeClick(smallBrushSize)} />
-						<img className="canvasToolsImg" 
-							src={brushSizeIcon} 
-							alt="Large brush" 
-							title="Large brush" 
+					</svg>
+					<svg className="canvasTool" height="24" width="24">
+						<circle
+							cx="12" cy="12" r="11"
+							stroke="black"
+							strokeWidth="2"
+							fill={eraserSelected ? brushBeforeEraser?.color : brushColour}
 							onClick={() => handleBrushSizeClick(largeBrushSize)} />
+					</svg>
 				</div>
-				<div style={{position: 'absolute', top: 0, right: 0, zIndex: 60}}>
+				<div className="colorPicker">
 					{
 						showColorPicker && (
-							<ChromePicker 
-								color={brushColour} 
+							<CompactPicker
+								color={brushColour}
 								onChange={(c: any) => {
 									// if color picked but still on eraser, auto swap back to brush
 									if (eraserSelected) {
-										handleBrushSizeClick(smallBrushSize)
+										handleBrushSizeClick(brushBeforeEraser?.size ?? smallBrushSize)
 									}
 									setBrushColour(c.hex)
-								}}/>
+									setShowColorPicker(false)
+								}} />
 						)
 					}
 				</div>
@@ -150,7 +152,7 @@ export default function Canvas(props: any) {
 	} else if ((props.assignedScenario as ScenarioAttempt)?.phase === 'draw') {
 		return (
 			<div ref={canvasGuessRef} className="canvas">
-				<CanvasDraw 
+				<CanvasDraw
 					className="canvasDraw"
 					catenaryColor={"#0a0302"}
 					gridColor={"rgba(150,150,150,0.17)"}
@@ -169,5 +171,5 @@ export default function Canvas(props: any) {
 			<div></div> // put loading component here
 		)
 	}
-	
+
 }

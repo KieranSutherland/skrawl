@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { withStyles } from '@material-ui/core/styles'
+import firebase from 'firebase/app'
 import TextField from '@material-ui/core/TextField'
+import * as firebaseHelper from '../../utils/firebaseHelper'
 import { accentColor } from '../../constants'
 
 const tfFontSize = 'calc(8px + 0.55vw)'
@@ -34,19 +36,30 @@ const CustomCssTF = withStyles({
 })(TextField)
 
 export default function Scenario(props: any) {
+	const firestore = firebase.firestore()
 	const [drawScenario, setDrawScenario] = useState<string>('')
 	const MAX_SCENARIO_GUESS_LENGTH = 80
 
 	useEffect(() => {
-		if (props.assignedScenario?.phase === 'guess') {
+		if (props.assignedScenario?.phase === 'guess') { // user is now drawing
 			setDrawScenario(props.assignedScenario.attempt)
+		} else { // user is now guessing
+			(props.currentLobby['scenarios'] as FirebaseScenariosField[]).forEach(scenario => {
+				// if scenario guess has already been submitted for this round, set text to value in database
+				if (scenario.assignedPlayer === props.currentPlayer?.uid && scenario.scenarioAttempts.length === props.currentLobby['currentRound'] + 1) {
+					props.setGuessScenario(scenario.scenarioAttempts[scenario.scenarioAttempts.length - 1].attempt)
+				}
+			})
 		}
-		props.setGuessScenario('')
 	}, [props.assignedScenario])
 
-	const handleScenarioGuessChange = (guess: string) => {
+	const handleScenarioGuessChange = async (guess: string) => {
 		if (guess.length <= MAX_SCENARIO_GUESS_LENGTH) {
 			props.setGuessScenario(guess)
+		}
+		// if user has already submitted for the round, unsubmit so they can submit again
+		if (props.currentPlayer.finishedRound) {
+			firebaseHelper.updatePlayerFinishedRoundValue(props.currentLobby['players'] as FirebaseLobbyPlayersField, props.currentPlayer?.uid, props.roomCode, false)
 		}
 	}
 

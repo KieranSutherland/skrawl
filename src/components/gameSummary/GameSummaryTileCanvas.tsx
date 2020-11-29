@@ -1,7 +1,7 @@
 import React from "react"
 import CanvasDraw from "react-canvas-draw"
 
-export default function GameSummaryTile(props: any) {
+export default function GameSummaryTileCanvas(props: any) {
 	return (
 		<CanvasDraw
 			catenaryColor={"#0a0302"}

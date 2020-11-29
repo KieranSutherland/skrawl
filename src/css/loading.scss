@@ -1,10 +1,5 @@
-$loading-size: 15vmin;
-
 .loading {
-	display: flex;
 	z-index: 50;
-	width: $loading-size;
-	height: $loading-size;
 	align-items: center; /* vertical */
 	justify-content: center; /* horizontal */
 }

@@ -36,7 +36,7 @@ $canvas-header-color: #bdbdbd;
 	color: #000000;
 }
 
-.submit {
+.scenarioSubmit {
 	width: 20%;
 	position: absolute;
 	right: 0;
@@ -65,20 +65,22 @@ $canvas-header-color: #bdbdbd;
 	height: 0.8%;
 }
 
+$ct-height: 38px;
+$ct-border: 3px;
 $ct-img-width: 2.5vmin;
 $ct-img-width-margin: 1vmin;
 
 .canvasTools {
-	width: calc((#{$ct-img-width} * counter(canvasToolsImg)) + (#{$ct-img-width-margin} * 2 * counter(canvasToolsImg)));
-	height: 6%;
+	// width: calc((#{$ct-img-width} * counter(canvasToolsImg)) + (#{$ct-img-width-margin} * 2 * counter(canvasToolsImg)));
+	height: $ct-height;
 	position: absolute;
 	display: flex;
 	align-items: center; /* vertical */
 	top:0;
 	left:0;
 	background-color: $canvas-header-color;
-	border-right: 3px solid #9fd8cd;
-	border-bottom: 3px solid #9fd8cd;
+	border-right: $ct-border solid #9fd8cd;
+	border-bottom: $ct-border solid #9fd8cd;
 	z-index: 15; // enough to override z-index for canvas drawings
 	box-shadow: $drop-box-shadow;
 	overflow: hidden;
@@ -86,13 +88,47 @@ $ct-img-width-margin: 1vmin;
 
 .canvasToolsImg {
 	width: $ct-img-width;
-	margin: 5% $ct-img-width-margin 2% $ct-img-width-margin;
 }
 
-.smallBrush {
-	width: 2vmin;
+.canvasTool {
+	margin: $ct-border $ct-img-width-margin 0 $ct-img-width-margin;
 }
 
-.canvasTools img:hover {
+.canvasTool:hover {
 	cursor: pointer;
+}
+
+.colorPicker {
+	position: absolute; 
+	top: $ct-height + $ct-border + 4px; 
+	left: 4px; 
+	z-index: 60
+}
+
+.canvasFinishedContainer {
+	display: flex;
+	align-items: center; /* vertical */
+	justify-content: center; /* horizontal */
+}
+
+.canvasFinishedCircle {
+	display: flex;
+    width: 40px;
+    height: 40px;
+    background: $accent-color;
+	align-items: center;
+	justify-content: center;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+	-webkit-border-radius: 50%;
+	box-shadow: 
+	0 0 5px rgba(0, 0, 0, 0.08),
+	0 0 10px rgba(0, 0, 0, 0.058),
+	0 0 14px rgba(0, 0, 0, 0.048);
+}
+
+.canvasFinishedImg {
+	width: 60%;
+	height: auto;
+	filter: invert(100%);
 }

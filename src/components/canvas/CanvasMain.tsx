@@ -13,7 +13,7 @@ export default function CanvasMain(props: any) {
 	useEffect(() => {
 		setAssignedScenario(
 			(props.currentLobby['scenarios'] as FirebaseScenariosField[])
-			.find(scenario => scenario.assignedPlayer === props.currentUserUid)
+			.find(scenario => scenario.assignedPlayer === props.currentPlayer.uid)
 			?.scenarioAttempts[props.currentLobby['currentRound'] - 1]
 		)
 	}, [props.currentLobby['currentRound']])
@@ -33,11 +33,20 @@ export default function CanvasMain(props: any) {
 			<CanvasHeader 
 				currentLobby={props.currentLobby} 
 				roomCode={props.roomCode} 
+				currentPlayer={props.currentPlayer}
 				assignedScenario={assignedScenario}
 				canvasDivRef={canvasDivRef}
 				canvasRef={canvasRef} />
-			<Timer currentLobby={props.currentLobby} roomCode={props.roomCode} />
-			<Canvas canvasDivRef={canvasDivRef} canvasRef={canvasRef} assignedScenario={assignedScenario} />
+			<Timer 
+				currentLobby={props.currentLobby} 
+				roomCode={props.roomCode} />
+			<Canvas 
+				currentPlayer={props.currentPlayer}
+				currentLobby={props.currentLobby} 
+				roomCode={props.roomCode} 
+				canvasDivRef={canvasDivRef} 
+				canvasRef={canvasRef} 
+				assignedScenario={assignedScenario} />
 		</div>
 	)
 }

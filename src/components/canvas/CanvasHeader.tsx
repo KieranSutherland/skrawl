@@ -1,22 +1,33 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Help from './Help'
 import Scenario from './Scenario'
 import CustomCssButton from '../mui/CustomCssButton'
+import Loading from '../Loading'
 import firebase from 'firebase/app'
 import { useHistory } from "react-router-dom"
 import * as firebaseHelper from '../../utils/firebaseHelper'
 import * as gameHelper from '../../utils/gameHelper'
+import finished from '../../resources/tick.svg'
 
 export default function CanvasHeader(props: any) {
 	const firestore = firebase.firestore()
 	const history = useHistory()
-	const currentUser = firebase.auth().currentUser!
+	const currentPlayer: FirebaseLobbyPlayerField | undefined = props.currentPlayer
 	const [guessScenario, setGuessScenario] = useState<string>('')
+	const [submitting, setSubmitting] = useState<boolean>(false)
 
-	const handleSubmitClick = async (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault()
-		const lobbyRef = await firestore.collection('lobbies').doc(props.roomCode)
-		const players: FirebaseLobbyPlayersField = await lobbyRef.get().then(lobby => lobby.get('players'))
+	useEffect(() => {
+		if (submitting) {
+			(async () => {
+				await submitScenario()
+				setSubmitting(false)
+			})()
+		}
+	}, [submitting])
+
+	const submitScenario = async () => {
+		const lobbyRef = firestore.collection('lobbies').doc(props.roomCode)
+		const players: FirebaseLobbyPlayersField = props.currentLobby['players']
 
 		// save current canvas to scenario object
 		const validAttempt = await updateScenarioAttempt(lobbyRef)
@@ -27,7 +38,7 @@ export default function CanvasHeader(props: any) {
 
 		// update player to finish round
 		players.forEach(player => {
-			if (player.uid === currentUser.uid) {
+			if (player.uid === props.currentPlayer.uid) {
 				player.finishedRound = true
 			}
 		})
@@ -44,36 +55,36 @@ export default function CanvasHeader(props: any) {
 	}
 
 	const updateScenarioAttempt = async (lobbyRef: FirebaseDocumentRefData): Promise<boolean> => {
-		const scenarios = await lobbyRef.get().then(lobby => lobby.get('scenarios') as FirebaseScenariosField[])
-		// await gameHelper.sleep(3000) used to replicate slow networks
+		const scenarios: FirebaseScenariosField[] = props.currentLobby['scenarios']
+		await gameHelper.sleep(1000) // used to replicate slow networks
 		var assignedScenariosFound = 0
-		var validAttempt = true
+		var validAttempt = true;
 
 		scenarios.forEach(scenario => {
-			if (scenario.assignedPlayer === currentUser.uid) {
+			if (scenario.assignedPlayer === props.currentPlayer.uid) {
 				assignedScenariosFound = assignedScenariosFound + 1
 				const latestScenarioAttempt = scenario.scenarioAttempts[scenario.scenarioAttempts.length - 1]
 				// If it's a drawing submission, check if it's empty, and if it is, don't submit it
-				if (((latestScenarioAttempt.attemptBy !== currentUser.uid && latestScenarioAttempt.phase === 'guess') || 
-					(latestScenarioAttempt.attemptBy === currentUser.uid && latestScenarioAttempt.phase === 'draw')) 
+				if (((latestScenarioAttempt.attemptBy !== props.currentPlayer.uid && latestScenarioAttempt.phase === 'guess') ||
+					(latestScenarioAttempt.attemptBy === props.currentPlayer.uid && latestScenarioAttempt.phase === 'draw'))
 					&& isDrawingEmpty(props.canvasRef.current?.getSaveData())) {
 					alert('Please draw the scenario before submitting')
 					validAttempt = false
 					return
 				}
 				// Submit user's round's scenario
-				if (latestScenarioAttempt.attemptBy === currentUser.uid) { // then user is resubmitting for the same turn
+				if (latestScenarioAttempt.attemptBy === props.currentPlayer.uid) { // then user is resubmitting for the same turn
 					scenario.scenarioAttempts[scenario.scenarioAttempts.length - 1] = {
-						attempt: latestScenarioAttempt.phase === 'draw' ? getSaveDataWithExactDimensions() : guessScenario,
-						attemptBy: currentUser.uid,
-						attemptByDisplayName: currentUser.displayName!,
+						attempt: latestScenarioAttempt.phase === 'draw' ? convertSaveDataToExactDimensions() : guessScenario,
+						attemptBy: props.currentPlayer.uid,
+						attemptByDisplayName: props.currentPlayer.displayName!,
 						phase: latestScenarioAttempt.phase
 					}
 				} else { // user is submitting for the first time this turn
 					scenario.scenarioAttempts.push({
-						attempt: latestScenarioAttempt.phase === 'draw' ? guessScenario : getSaveDataWithExactDimensions(),
-						attemptBy: currentUser.uid,
-						attemptByDisplayName: currentUser.displayName!,
+						attempt: latestScenarioAttempt.phase === 'draw' ? guessScenario : convertSaveDataToExactDimensions(),
+						attemptBy: props.currentPlayer.uid,
+						attemptByDisplayName: props.currentPlayer.displayName!,
 						phase: latestScenarioAttempt.phase === 'draw' ? 'guess' : 'draw'
 					})
 				}
@@ -116,7 +127,7 @@ export default function CanvasHeader(props: any) {
 		return false
 	}
 
-	const getSaveDataWithExactDimensions = () => {
+	const convertSaveDataToExactDimensions = () => {
 		const saveDataJson = firebaseHelper.parseJson(props.canvasRef.current?.getSaveData())
 		saveDataJson['width'] = props.canvasDivRef.current?.offsetWidth
 		saveDataJson['height'] = props.canvasDivRef.current?.offsetHeight
@@ -124,7 +135,8 @@ export default function CanvasHeader(props: any) {
 	}
 
 	const startNewRound = async (lobbyRef: FirebaseDocumentRefData, players: FirebaseLobbyPlayersField) => {
-		const [scenarios, currentRound] = await lobbyRef.get().then(lobby => [lobby.get('scenarios'), lobby.get('currentRound')])
+		const scenarios: FirebaseScenariosField[] = props.currentLobby['scenarios']
+		const currentRound: number = props.currentLobby['currentRound']
 
 		// check all scenarios have been saved correctly
 		const missingScenarios = scenarios.filter((scenario: FirebaseScenariosField) => scenario.scenarioAttempts.length - 1 !== currentRound)
@@ -150,9 +162,9 @@ export default function CanvasHeader(props: any) {
 			player.finishedRound = false
 		})
 
-		const [newRound, maxRound] = await lobbyRef.get().then(lobby => [lobby.get('currentRound') + 1, lobby.get('maxRound')])
 		// if set of rounds are finished, no need to update scenarios
-		if (newRound > maxRound) {
+		const newRound = currentRound + 1
+		if (newRound > props.currentLobby['maxRound']) {
 			console.log('finishing set of rounds...')
 			await lobbyRef.update({
 				currentRound: newRound,
@@ -172,7 +184,7 @@ export default function CanvasHeader(props: any) {
 			const indexOfPlayer = players.length === players.indexOf(assignedPlayer) + 1 ? 0 : players.indexOf(assignedPlayer) + 1
 			scenario.assignedPlayer = players[indexOfPlayer].uid
 		})
-		
+
 		console.log('starting new round...')
 		await lobbyRef.update({
 			currentRound: newRound,
@@ -186,15 +198,30 @@ export default function CanvasHeader(props: any) {
 			<div className="round">
 				ROUND: {props.currentLobby['currentRound']}/{props.currentLobby['maxRound']}
 			</div>
-			<form onSubmit={handleSubmitClick}>
-				<Scenario 
+			<form onSubmit={e => { e.preventDefault(); setSubmitting(true) }}>
+				<Scenario
+					currentPlayer={props.currentPlayer}
 					guessScenario={guessScenario}
 					setGuessScenario={setGuessScenario}
-					currentLobby={props.currentLobby} 
-					roomCode={props.roomCode} 
+					currentLobby={props.currentLobby}
+					roomCode={props.roomCode}
 					assignedScenario={props.assignedScenario} />
-				<div className="submit">
-					<CustomCssButton text="Submit" width="100%" height="4.4vh" fontSize="calc(10px + 0.5vw)" />
+				<div className="scenarioSubmit">
+					{
+						currentPlayer?.finishedRound ?
+							<div className="canvasFinishedContainer">
+								<div className="canvasFinishedCircle">
+									<img className="canvasFinishedImg" src={finished} alt="Submitted" />
+								</div>
+							</div>
+							:
+							submitting ?
+								<div className="canvasFinishedContainer">
+									<Loading size="4.2vh" hideStuckText={true} />
+								</div>
+								:
+								<CustomCssButton text="Submit" width="100%" height="4.4vh" fontSize="calc(10px + 0.5vw)" />
+					}
 				</div>
 			</form>
 			<Help />

@@ -5,7 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import helpIcon from '../../resources/help.png'
+import helpIcon from '../../resources/help.svg'
 
 export default function Help() {
 	const [showHelp, setShowHelp] = useState(false);
@@ -58,7 +58,9 @@ export default function Help() {
 						{"SCENARIO: Show the current scenario assigned to you for you to guess/draw."}
 					</DialogContentText>
 					<DialogContentText>
-						{"SUBMIT: Click to submit your current guess/drawing and end your turn for the round."}
+						{"SUBMIT: Click to submit your current guess/drawing and end your turn for the round. Once submitted, a tick "
+						+ "will appear. If you edit your guess/drawing after submitting, your turn will go back to unticked and wait "
+						+ "for you to submit again to end your turn."}
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>

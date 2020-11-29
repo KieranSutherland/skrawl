@@ -12,6 +12,7 @@ export default function Game() {
 	const history = useHistory()
 	const [roomCode, setRoomCode] = useState<string>('????')
 	const [currentUser, setCurrentUser] = useState<firebase.User | null>(null)
+	const [currentPlayer, setCurrentPlayer] = useState<FirebaseLobbyPlayerField | undefined>()
 	const [currentLobby, setCurrentLobby] = useState<firebase.firestore.DocumentData>()
 
 	const stopAuthListener = firebase.auth().onAuthStateChanged(user => setCurrentUser(user))
@@ -40,6 +41,7 @@ export default function Game() {
 		const unsubscribeSnapshotListener = lobbyRef.onSnapshot(doc => {
 			firebaseHelper.setupUnsubscriber(doc, currentUser?.uid, history, unsubscribeSnapshotListener)
 			setRoomCode(doc!.id)
+			setCurrentPlayer((doc!.get('players') as FirebaseLobbyPlayersField).find(player => player.uid === currentUser?.uid))
 			setCurrentLobby(doc!.data()) // make sure this is set last so the other props are ready
 		})
 	}
@@ -53,6 +55,7 @@ export default function Game() {
 			<div className="gameMain">
 				<GameMain 
 					currentUserUid={currentUser ? currentUser.uid : ''}
+					currentPlayer={currentPlayer}
 					currentLobby={currentLobby}
 					roomCode={roomCode}/>
 			</div>

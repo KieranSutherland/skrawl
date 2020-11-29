@@ -1,6 +1,6 @@
 import React from 'react'
-import crown from '../../resources/crown.png'
-import finished from '../../resources/tick.png'
+import crown from '../../resources/crown.svg'
+import finished from '../../resources/tick.svg'
 
 export default function Player(props: any) {
 	return (

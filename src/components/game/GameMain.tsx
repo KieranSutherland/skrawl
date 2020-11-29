@@ -24,7 +24,7 @@ export default function GameMain(props: any) {
 	else {
 		return (
 			<CanvasMain 
-				currentUserUid={props.currentUserUid}
+				currentPlayer={props.currentPlayer}
 				currentLobby={props.currentLobby}
 				roomCode={props.roomCode} />
 		)

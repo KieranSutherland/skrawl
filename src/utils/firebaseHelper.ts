@@ -173,6 +173,6 @@ export const setupUnsubscriber = (doc: FirebaseDocumentSnapshotData, currentUser
 	if (doc!.get('started') === false) {
 		unsubscriberFunction()
 		alert('Game hasn\'t started, you shouldn\'t be here!')
-		history.push('/')
+		history.push('/private-lobby-creator')
 	}
 }

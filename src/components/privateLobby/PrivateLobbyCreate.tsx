@@ -53,6 +53,8 @@ export default function PrivateLobbyCreate() {
 			players: [newPlayer],
 			messages: [],
 			currentRound: 1,
+			maxRound: 1,
+			scenarios: [],
 			sfw: true,
 			roundTimer: DEFAULT_ROUND_TIMER
 		})

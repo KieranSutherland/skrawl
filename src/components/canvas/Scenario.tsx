@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import { withStyles } from '@material-ui/core/styles'
-import firebase from 'firebase/app'
 import TextField from '@material-ui/core/TextField'
 import * as firebaseHelper from '../../utils/firebaseHelper'
 import { accentColor } from '../../constants'
@@ -36,13 +35,13 @@ const CustomCssTF = withStyles({
 })(TextField)
 
 export default function Scenario(props: any) {
-	const firestore = firebase.firestore()
 	const [drawScenario, setDrawScenario] = useState<string>('')
 	const MAX_SCENARIO_GUESS_LENGTH = 80
 
 	useEffect(() => {
 		if (props.assignedScenario?.phase === 'guess') { // user is now drawing
 			setDrawScenario(props.assignedScenario.attempt)
+			props.setGuessScenario('')
 		} else if (props.assignedScenario?.phase === 'draw') { // user is now guessing
 			(props.currentLobby['scenarios'] as FirebaseScenariosField[]).forEach(scenario => {
 				// if scenario guess has already been submitted for this round, set text to value in database

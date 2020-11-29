@@ -1,6 +1,6 @@
 import scenarios from '../scenarios.json'
 
-export const generateScenarioList = (sfw: boolean | undefined, players: FirebaseLobbyPlayersField): FirebaseScenariosField[] => {
+export const generateScenarioList = async (sfw: boolean | undefined, players: FirebaseLobbyPlayersField): Promise<FirebaseScenariosField[]> => {
 	const scenariosFiltered = sfw ? scenarios.sfw : scenarios.sfw.concat(scenarios.nsfw)
 	var scenariosList: FirebaseScenariosField[] = []
 	players.forEach(player => {
@@ -19,6 +19,7 @@ export const generateScenarioList = (sfw: boolean | undefined, players: Firebase
 		scenariosList.push(scenario)
 		scenariosFiltered.splice(randomIndex)
 	})
+	console.log(scenariosList)
 	return scenariosList
 }
 

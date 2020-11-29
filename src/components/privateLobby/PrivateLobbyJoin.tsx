@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom"
 import firebase from 'firebase/app'
 import * as firebaseHelper from '../../utils/firebaseHelper'
 import 'firebase/firestore';
+import { maxPlayers } from '../../constants'
 
 export default function PrivateLobbyJoin() {
 	const firestore = firebase.firestore(); // change to use explicit import at some point
@@ -38,6 +39,14 @@ export default function PrivateLobbyJoin() {
 		if (lobby.get('started')) {
 			setLoading(false)
 			alert('This lobby\'s game has already started')
+			return
+		}
+
+		// Check if lobby has max players
+		console.log("lobby.get('players').length: " + lobby.get('players').length)
+		if (lobby.get('players').length >= maxPlayers) {
+			setLoading(false)
+			alert(`This lobby already has the max amount of players. (${maxPlayers})`)
 			return
 		}
 		

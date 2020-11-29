@@ -15,10 +15,20 @@ export default function GameSummary(props: any) {
 	const players: FirebaseLobbyPlayersField = props.currentLobby['players']
 	const [selectedScenario, setSelectedScenario] = useState<FirebaseScenariosField | null>(null)
 	const [selectedScenarioDisplayName, setSelectedScenarioDisplayName] = useState<string>('')
+	const [submitting, setSubmitting] = useState<boolean>(false)
 
 	useEffect(() => {
 		updateSelectedScenario()
 	}, [scenarios, players.length])
+
+	useEffect(() => {
+		if (submitting) {
+			(async () => {
+				await vote()
+				setSubmitting(false)
+			})()
+		}
+	}, [submitting])
 
 	useLayoutEffect(() => {
 		const updateSize = () => {
@@ -54,9 +64,9 @@ export default function GameSummary(props: any) {
 		)
 	}
 
-	const handleVoteClick = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-		event.preventDefault()
+	const vote = async () => {
 		const lobbyRef = firestore.collection('lobbies').doc(props.roomCode)
+		// await gameHelper.sleep(2000)
 
 		// add point to player
 		const playerWinnerUid = selectedScenario?.scenarioAttempts[props.currentLobby['selectedWinnerIndex']].attemptBy!;
@@ -66,7 +76,7 @@ export default function GameSummary(props: any) {
 			}
 		})
 
-		goToNextScenario(lobbyRef)
+		await goToNextScenario(lobbyRef)
 	}
 
 	const goToNextScenario = async (lobbyRef: FirebaseDocumentRefData) => {
@@ -74,9 +84,12 @@ export default function GameSummary(props: any) {
 
 		// If there are no more scenarios to go through, restart game
 		if (removedSelectedScenarioList.length === 0) {
-			restartGame(lobbyRef)
+			await restartGame(lobbyRef)
 			return
 		}
+
+		// set to null so the user doesn't continue to see their summary for a split second before the next scenario gets set
+		setSelectedScenario(null)
 
 		await lobbyRef.update({
 			scenarios: removedSelectedScenarioList,
@@ -113,10 +126,13 @@ export default function GameSummary(props: any) {
 		}
 
 		// otherwise, start new set of rounds
-		const newScenariosList = gameHelper.generateScenarioList(props.currentLobby['sfw'], players)
+		const newScenariosList = await gameHelper.generateScenarioList(props.currentLobby['sfw'], players)
+		console.log('scenarios: ' + firebaseHelper.stringifyJson(newScenariosList))
+		console.log('scenarios: ' + newScenariosList)
+		// console.log('players: ' + firebaseHelper.stringifyJson(players))
 		await lobbyRef.update({
-			currentRound: 1,
 			scenarios: newScenariosList,
+			currentRound: 1,
 			players: players
 		})
 	}
@@ -144,15 +160,18 @@ export default function GameSummary(props: any) {
 					<div className="gameSummaryHeaderContinue">
 						{
 							props.currentUserUid === selectedScenario?.originalPlayer ?
-								props.currentLobby['selectedWinnerIndex'] ?
-									<CustomCssButton
-										text="Submit"
-										width="10vw"
-										height="5vh"
-										fontSize="calc(10px + 0.5vw)"
-										onClick={handleVoteClick} />
+								submitting ?
+									<Loading size="4.2vh" hideStuckText={true} />
 									:
-									<h3>Select your favourite scenario</h3>
+									props.currentLobby['selectedWinnerIndex'] ?
+										<CustomCssButton
+											text="Submit"
+											width="10vw"
+											height="5vh"
+											fontSize="calc(10px + 0.5vw)"
+											onClick={(e: any) => { e.preventDefault(); setSubmitting(true) }} />
+										:
+										<h3>Select your favourite scenario</h3>
 								:
 								<h3>Waiting for {selectedScenarioDisplayName} to vote...</h3>
 						}

@@ -14,7 +14,7 @@ import { useHistory } from "react-router-dom"
 import firebase from 'firebase/app'
 import * as firebaseHelper from '../../utils/firebaseHelper'
 import * as gameHelper from '../../utils/gameHelper'
-import { accentColor } from '../../constants'
+import { accentColor, minPlayers, maxPlayers } from '../../constants'
 
 const CustomCssRadio = withStyles({
 	root: {
@@ -51,8 +51,6 @@ export default function PrivateLobbyCreator() {
 	const [players, setPlayers] = useState<FirebaseLobbyPlayersField>([])
 	const [hostUid, setHostUid] = useState<string>('')
 	const [currentUser, setCurrentUser] = useState<firebase.User | null>(null)
-	const MIN_PLAYERS: number = 2 // set to 4 for production
-	const MAX_PLAYERS: number = 8
 
 	const stopAuthListener = firebase.auth().onAuthStateChanged(user => setCurrentUser(user))
 	
@@ -85,6 +83,9 @@ export default function PrivateLobbyCreator() {
 
 	const handleScenarioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const newBool: boolean = (event.target as HTMLInputElement).value === 'true'
+		if (sfw === newBool) {
+			return
+		}
 		firestore.collection('lobbies').doc(roomCode).update({
 			sfw: newBool
 		})
@@ -92,15 +93,18 @@ export default function PrivateLobbyCreator() {
 
 	const handleStartClick = async (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
 		event.preventDefault()
-		if (players.length < MIN_PLAYERS) {
-			alert(`You need ${MIN_PLAYERS} or more players to start a game`)
+		if (players.length < minPlayers) {
+			alert(`You need ${minPlayers} or more players to start a game`)
 			return
-		} else if (players.length > MAX_PLAYERS) {
-			alert(`You need less than ${MAX_PLAYERS} players to start a game`)
+		} else if (players.length > maxPlayers) {
+			alert(`You need less than ${maxPlayers} players to start a game`)
 			return
 		}
-		players.forEach(player => player['points'] = 0)
-		const scenariosList = gameHelper.generateScenarioList(sfw, players)
+		players.forEach(player => player.points = 0)
+		const scenariosList = await gameHelper.generateScenarioList(sfw, players)
+		// console.log('players: ' + players)
+		// console.log('maxRound: ' + players.length)
+		// console.log('scenarios: ' + scenariosList)
 		await firestore.collection('lobbies').doc(roomCode).update({
 			players: players,
 			started: true,

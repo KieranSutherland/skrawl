@@ -56,7 +56,7 @@ export default function CanvasHeader(props: any) {
 
 	const updateScenarioAttempt = async (lobbyRef: FirebaseDocumentRefData): Promise<boolean> => {
 		const scenarios: FirebaseScenariosField[] = props.currentLobby['scenarios']
-		await gameHelper.sleep(1000) // used to replicate slow networks
+		// await gameHelper.sleep(1000) // used to replicate slow networks
 		var assignedScenariosFound = 0
 		var validAttempt = true;
 

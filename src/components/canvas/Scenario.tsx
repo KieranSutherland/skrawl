@@ -43,7 +43,7 @@ export default function Scenario(props: any) {
 	useEffect(() => {
 		if (props.assignedScenario?.phase === 'guess') { // user is now drawing
 			setDrawScenario(props.assignedScenario.attempt)
-		} else { // user is now guessing
+		} else if (props.assignedScenario?.phase === 'draw') { // user is now guessing
 			(props.currentLobby['scenarios'] as FirebaseScenariosField[]).forEach(scenario => {
 				// if scenario guess has already been submitted for this round, set text to value in database
 				if (scenario.assignedPlayer === props.currentPlayer?.uid && scenario.scenarioAttempts.length === props.currentLobby['currentRound'] + 1) {
